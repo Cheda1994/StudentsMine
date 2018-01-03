@@ -1,0 +1,26 @@
+﻿@model StudentsMine.Models.Course
+@{
+    ViewBag.Title = "AddCource";
+}
+
+<h2>Add Cource</h2>
+
+@using (Html.BeginForm("AddCource", "Cource", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+        @Html.ValidationSummary()
+        <div class="form-group">
+        @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+    </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+        </div>
+    </div>
+    
+    <input type="submit" value="Create Cource"/>
+}
