@@ -10,8 +10,9 @@ namespace StudentsMine.Models
         public ApplicationUser() {
             Projects = new List<Project>();
         }
-        public Student Student { get; set; }
-        public Teacher Teacher { get; set; }
+        public virtual Student Student { get; set; }
+        public virtual Teacher Teacher { get; set; }
+        public string Role { get; set; }
         public ICollection<Project> Projects { get; set; }
     }
 
@@ -19,6 +20,7 @@ namespace StudentsMine.Models
     {
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<OrderToCourse> OrdersToCourse { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<HomeWork> Homeworks { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -30,8 +32,6 @@ namespace StudentsMine.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-
         }
     }
 }

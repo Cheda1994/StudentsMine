@@ -1,0 +1,89 @@
+﻿@model StudentsMine.Models.HomeWork
+
+@{
+    ViewBag.Title = "AddHomeWork";
+}
+
+<h2>View1</h2>
+<script>
+
+</script>
+@using (Html.BeginForm("AddHomeWork", "Cource" , new {courseId=ViewBag.CourceId}))
+{
+
+
+    <div class="form-horizontal">
+        <h4>HomeWork</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Title)
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HasCondition, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model => model.HasCondition)
+                @Html.ValidationMessageFor(model => model.HasCondition)
+            </div>
+        </div>
+
+
+        <div id="condition">
+            <h2>Condition</h2>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Condition.Until)
+                    @Html.ValidationMessageFor(model => model.Condition.Until)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Condition.IsBlocked, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(model => model.Condition.IsBlocked)
+                    @Html.ValidationMessageFor(model => model.Condition.IsBlocked)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(model => model.Condition.HasRequiredFormat)
+                    @Html.ValidationMessageFor(model => model.Condition.HasRequiredFormat)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Condition.RequiredFormat)
+                    @Html.ValidationMessageFor(model => model.Condition.RequiredFormat)
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

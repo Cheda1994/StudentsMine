@@ -31,14 +31,14 @@ namespace StudentsMine.Models
 
     public class CreateStudentView : RegisterViewModel
     {
-        public string Email { get; set; }
         public string Name { get; set; }
     }
 
     public class SudentRegistrationStatus
     {
-        public SudentRegistrationStatus(CreateStudentView Student, bool Result, IEnumerable<string> ErrorMessage)
+        public SudentRegistrationStatus(CreateStudentView Student, bool Result, StudentRegStatus status,  IEnumerable<string> ErrorMessage)
         {
+            this.Status = status;
             this.Student = Student;
             this.Result = Result;
             if (Result)
@@ -55,6 +55,10 @@ namespace StudentsMine.Models
         }
         public CreateStudentView Student { get; set; }
         public bool Result { get; set; }
+        public StudentRegStatus Status { get; set; }
         public string ErrorMessage { get; set; }
+        public List<OrderToCourse> OrdersToCourse { get; set; }
     }
+
+    public enum StudentRegStatus { OK , ExistsEmail , NoValideModel , Exception , AlreadyOrdered}
 }

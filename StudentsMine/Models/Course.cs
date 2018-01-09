@@ -16,9 +16,9 @@ namespace StudentsMine.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Teacher Teacher { get; set; }
-        public ICollection<Student> Students { get; set; }
-        public ICollection<HomeWork> HomeWorks { get; set; }
+        public virtual Teacher Teacher { get; set; }
+        public virtual ICollection<Student> Students { get; set; }
+        public virtual ICollection<HomeWork> HomeWorks { get; set; }
         public ICollection<Project> ProjectsHub { get; set; }
     }
 

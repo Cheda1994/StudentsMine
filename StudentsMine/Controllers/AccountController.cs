@@ -81,7 +81,9 @@ namespace StudentsMine.Controllers
             {
                 var user = new ApplicationUser() { UserName = model.UserName };
                 user.Teacher = new Teacher();
+                user.Role = "Teacher";
                 user.Teacher.Name = model.UserName;
+                user.Teacher.Email = model.Email;
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -106,14 +108,16 @@ namespace StudentsMine.Controllers
         public async Task<SudentRegistrationStatus> RegisterStudent(CreateStudentView model)
         {
             SudentRegistrationStatus status = null;
+
             try
             {
                 if (ModelState.IsValid)
                 {
                     var user = new ApplicationUser() { UserName = model.UserName };
                     user.Student = new Student(model);
+                    user.Role = "Student";
                     var result = await UserManager.CreateAsync(user, "111111");
-                    status = new SudentRegistrationStatus(model, result.Succeeded, result.Errors);
+                    status = new SudentRegistrationStatus(model, result.Succeeded, StudentRegStatus.OK , result.Errors);
                     if (result.Succeeded)
                     {
                         var student = UserManager.FindByName(user.UserName);
@@ -122,12 +126,12 @@ namespace StudentsMine.Controllers
                 }
                 else
                 {
-                    status = new SudentRegistrationStatus(model, ModelState.IsValid, new List<string>() { "The model state is not valide" });
+                    status = new SudentRegistrationStatus(model, ModelState.IsValid, StudentRegStatus.NoValideModel, new List<string>() { "The model state is not valide" });
                 }
             }
             catch (Exception ex)
             {
-                status = new SudentRegistrationStatus(model, false, new List<string>() { ex.Message });
+                status = new SudentRegistrationStatus(model, false, StudentRegStatus.Exception, new List<string>() { ex.Message });
             }
 
             // If we got this far, something failed, redisplay form

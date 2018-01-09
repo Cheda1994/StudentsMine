@@ -13,12 +13,13 @@ namespace StudentsMine.Models
             Courses = new List<Course>();
         }
         public int Id { get; set; }
+        [Required]
         public string Email { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
-        public ApplicationUser ApplicationUser { get; set; }
-        public ICollection<Course> Courses { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
 
 
     }

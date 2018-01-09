@@ -7,11 +7,13 @@ namespace StudentsMine.Models
 {
     public class HomeWork
     {
+        public HomeWork() { }
         public HomeWork(Course cource)
         {
             this.Course = cource;
             InitProjects(cource.Students);
         }
+
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -20,6 +22,12 @@ namespace StudentsMine.Models
         public Course Course { get; set; }
         public Condition Condition { get; set; }
         public ICollection<Project> Projects { get; set; }
+
+        public void InitProjects(Course course) 
+        {
+            this.Course = course;
+            InitProjects(course.Students);
+        }
 
         private void InitProjects(ICollection<Student> students)
         {

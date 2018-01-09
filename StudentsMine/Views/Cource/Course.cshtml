@@ -1,7 +1,17 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Course";
 }
+<script>
+    function holder(id) {
+        $("#content").load("/Cource/AddHomeWork?courceId=" + id)
+    }
 
+</script>
 <h2>Course</h2>
+@*<div id="holder">
+    <div id="content">
 
+    </div>
+</div>*@
+@Html.ActionLink("Add students", "CreateStudent", "Student", new { id = ViewBag.CourseId } , null)
+<a onclick="holder(2)">Add home work</a>
