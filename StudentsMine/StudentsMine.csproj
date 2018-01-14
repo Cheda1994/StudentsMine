@@ -223,6 +223,14 @@
     <Compile Include="Migrations\201801091723307_AddOrderToCourceToStudent.Designer.cs">
       <DependentUpon>201801091723307_AddOrderToCourceToStudent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801131559540_HomeWork_ProjectChanges.cs" />
+    <Compile Include="Migrations\201801131559540_HomeWork_ProjectChanges.Designer.cs">
+      <DependentUpon>201801131559540_HomeWork_ProjectChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801131813272_HomeWork_ProjectChanges#2.cs" />
+    <Compile Include="Migrations\201801131813272_HomeWork_ProjectChanges#2.Designer.cs">
+      <DependentUpon>201801131813272_HomeWork_ProjectChanges#2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Condition.cs" />
@@ -289,6 +297,8 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
+    <Content Include="Scripts\createStudent.js" />
+    <Content Include="Scripts\duplicator.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
     <Content Include="Scripts\jquery-1.12.4.min.map" />
@@ -330,14 +340,6 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Student\CreateStudent.cshtml" />
-    <Content Include="Views\Student\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Student\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Student\_RemoveAccountPartial.cshtml" />
-    <Content Include="Views\Student\_SetPasswordPartial.cshtml" />
-    <Content Include="Views\Student\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Student\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Student\Login.cshtml" />
-    <Content Include="Views\Student\Manage.cshtml" />
     <Content Include="Views\Teacher\Register.cshtml" />
     <Content Include="Views\Teacher\_ChangePasswordPartial.cshtml" />
     <Content Include="Views\Teacher\_ExternalLoginsListPartial.cshtml" />
@@ -351,6 +353,8 @@
     <Content Include="Views\Cource\AddCource.cshtml" />
     <Content Include="Views\Cource\Course.cshtml" />
     <Content Include="Views\Cource\AddHomeWork.cshtml" />
+    <Content Include="Views\Student\AddStudentToCourse.cshtml" />
+    <Content Include="Views\Cource\HomeWork\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -406,6 +410,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801091723307_AddOrderToCourceToStudent.resx">
       <DependentUpon>201801091723307_AddOrderToCourceToStudent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801131559540_HomeWork_ProjectChanges.resx">
+      <DependentUpon>201801131559540_HomeWork_ProjectChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801131813272_HomeWork_ProjectChanges#2.resx">
+      <DependentUpon>201801131813272_HomeWork_ProjectChanges#2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

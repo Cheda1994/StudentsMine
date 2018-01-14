@@ -46,22 +46,21 @@ namespace StudentsMine.Controllers
                     if (EmailAlreadyExists(item))
                     {
                         var result = await account.RegisterStudent(item);
-                        OrderToCourse order = new OrderToCourse();
-                        order.Student = context.Students.FirstOrDefault(student => student.Email ==item.Email );
-                        order.Course = context.Courses.Find(courseId);
-                        context.OrdersToCourse.Add(order);
-                        context.SaveChanges();
+                        if (result.Result)
+                        {
+                            await SendOrderToCourse(item.Email, courseId);
+                        }
                         results.Add(result);
                     }
-                    else if(IsStudent(item))
+                    else if(IsStudent(item.Email))
                     {
-                        if (AlreadyHasOrder(courseId , item))
+                        if (AlreadyHasOrder(courseId , item.Email))
                         {
-                            results.Add(new SudentRegistrationStatus(item, false, StudentRegStatus.AlreadyOrdered , new List<string>() { "This email is already orderd" }));
+                            results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.AlreadyOrdered, new List<string>() { "This email " + item.Email + " is already orderd" }));
                         }
                         else
                         {
-                            results.Add(new SudentRegistrationStatus(item, false, StudentRegStatus.ExistsEmail, new List<string>() { "This email is already exists" }));
+                            results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.EmailExists, new List<string>() { "This email "+ item.Email +" is already exists" }));
                         }
                     }
                 }
@@ -86,51 +85,71 @@ namespace StudentsMine.Controllers
 
         }
 
-        public async Task<ActionResult> SendOrderToCourse(string email,int courseId) {
+        
+        public ActionResult AddStudentToCourse(int id)
+        {
+            ViewData["courseId"] = id;
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Teacher")]
+        public async Task<ActionResult> AddStudentToCourse(List<OrderStudentToCourceView> email , int courseId) {
+            List<SudentAddToCourseStatus> results = new List<SudentAddToCourseStatus>();
+            foreach (var item in email)
+            {
+                SudentAddToCourseStatus result;
+                if (IsStudent(item.Email))
+                {
+                    result = await SendOrderToCourse(item.Email, courseId);
+                    
+                }
+                else
+                {
+                    result = new SudentAddToCourseStatus(item.Email, false, StudentRegResults.Exception , new List<string> { "The email " + email + " is email of ticher" });
+                }
+                results.Add(result);
+            }
+            var json = new JavaScriptSerializer().Serialize(results);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json",
+                ContentEncoding = Encoding.UTF8
+            };
+        }
+
+        public async Task<SudentAddToCourseStatus> SendOrderToCourse(string email, int courseId)
+        {
             try
             {
                 Student sturent = context.Students.FirstOrDefault(x => x.Email == email);
                 if (sturent == null)
                 {
-                    return new ContentResult()
-                {
-                    Content = "The email "+email+" is not available",
-                    ContentType = "application/json",
-                    ContentEncoding = Encoding.UTF8
-                };
+                  return new SudentAddToCourseStatus(email, false, StudentRegResults.Exception, new List<string> { "The email " + email + " is not available" });
                 }
                 Course course = context.Courses.Find(courseId);
                 if (course.Students.Contains(sturent))
                 {
-                    return new ContentResult()
-                {
-                    Content = "The email "+email+" is already student in this course",
-                    ContentType = "application/json",
-                    ContentEncoding = Encoding.UTF8
-                };
+                    return new SudentAddToCourseStatus(email, false, StudentRegResults.AlreadyParticipate , new List<string> { "The email " + email + " is already student in this course" });
                 }
-                course.Students.Contains(sturent);
-                course.Students.Add(sturent);
-                context.Entry<Course>(course).State = EntityState.Modified;
-                await context.SaveChangesAsync();
-                return new ContentResult()
+                if (AlreadyHasOrder(courseId,email))
                 {
-                    Content = "Success",
-                    ContentType = "application/json",
-                    ContentEncoding = Encoding.UTF8
-                };
+                    return new SudentAddToCourseStatus(email, false, StudentRegResults.AlreadyOrdered , new List<string> { "This email "+email+" is already orderd" });
+                }
+                OrderToCourse order = new OrderToCourse(course,sturent);
+                context.OrdersToCourse.Add(order);
+                await context.SaveChangesAsync();
+                return new SudentAddToCourseStatus(email, false, StudentRegResults.OK, new List<string> { "No errors" });
             }
             catch (Exception ex)
             {
-                return new ContentResult()
-                {
-                    Content = ex.Message,
-                    ContentType = "application/json",
-                    ContentEncoding = Encoding.UTF8
-                };
+                return new SudentAddToCourseStatus(email, false, StudentRegResults.Exception, new List<string> { ex.Message });
             }
 
         }
+
+
 
         #region Private Helpers
         private bool EmailAlreadyExists(CreateStudentView model) {
@@ -142,9 +161,9 @@ namespace StudentsMine.Controllers
             return true;
         }
 
-        private bool IsStudent(CreateStudentView model)
+        private bool IsStudent(string studentEmail)
         {
-            int teachers = context.Teachers.Where(x => x.Email == model.Email).Count();
+            int teachers = context.Teachers.Where(x => x.Email == studentEmail).Count();
             if (teachers != 0)
             {
                 return false;
@@ -152,9 +171,9 @@ namespace StudentsMine.Controllers
             return true;
         }
 
-        private bool AlreadyHasOrder(int courceId , CreateStudentView model) 
+        private bool AlreadyHasOrder(int courceId , string studentEmail) 
         {
-            var orders = context.OrdersToCourse.Where(x => x.Course.Id == courceId && x.Student.Email == model.Email).Count();
+            var orders = context.OrdersToCourse.Where(x => x.Course.Id == courceId && x.Student.Email == studentEmail).Count();
             if (orders == 0)
             {
                 return false;

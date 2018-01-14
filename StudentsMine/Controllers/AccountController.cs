@@ -117,7 +117,7 @@ namespace StudentsMine.Controllers
                     user.Student = new Student(model);
                     user.Role = "Student";
                     var result = await UserManager.CreateAsync(user, "111111");
-                    status = new SudentRegistrationStatus(model, result.Succeeded, StudentRegStatus.OK , result.Errors);
+                    status = new SudentRegistrationStatus(model, result.Succeeded, StudentRegResults.OK , result.Errors);
                     if (result.Succeeded)
                     {
                         var student = UserManager.FindByName(user.UserName);
@@ -126,15 +126,15 @@ namespace StudentsMine.Controllers
                 }
                 else
                 {
-                    status = new SudentRegistrationStatus(model, ModelState.IsValid, StudentRegStatus.NoValideModel, new List<string>() { "The model state is not valide" });
+                    status = new SudentRegistrationStatus(model, ModelState.IsValid, StudentRegResults.NoValideModel, new List<string>() { "The model state is not valide" });
                 }
             }
             catch (Exception ex)
             {
-                status = new SudentRegistrationStatus(model, false, StudentRegStatus.Exception, new List<string>() { ex.Message });
+                status = new SudentRegistrationStatus(model, false, StudentRegResults.Exception, new List<string>() { ex.Message });
             }
 
-            // If we got this far, something failed, redisplay form
+            // If we got this var, something failed, redisplay form
             return status;
         }
 

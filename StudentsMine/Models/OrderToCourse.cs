@@ -11,6 +11,12 @@ namespace StudentsMine.Models
         {
             this.Status = false;
         }
+
+        public OrderToCourse(Course course , Student student) :this()
+        {
+            this.Student = student;
+            this.Course = course;
+        }
         public int Id { get; set; }
         public bool Status { get; set; }
         public virtual Student Student { get; set; }

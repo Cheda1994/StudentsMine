@@ -34,12 +34,17 @@ namespace StudentsMine.Models
         public string Name { get; set; }
     }
 
+    public class OrderStudentToCourceView
+    {
+        public string Email {get;set;}
+    }
     public class SudentRegistrationStatus
     {
-        public SudentRegistrationStatus(CreateStudentView Student, bool Result, StudentRegStatus status,  IEnumerable<string> ErrorMessage)
+        public SudentRegistrationStatus(CreateStudentView Student, bool Result, StudentRegResults status,  IEnumerable<string> ErrorMessage)
         {
             this.Status = status;
-            this.Student = Student;
+            this.Email = Student.Email;
+            this.Name = Student.Name;
             this.Result = Result;
             if (Result)
             {
@@ -49,16 +54,40 @@ namespace StudentsMine.Models
             {
                 foreach (var message in ErrorMessage)
                 {
-                    this.ErrorMessage += string.Format("Error: {0}. ", message);
+                    this.ErrorMessage += string.Format("Error: {0} ", message);
                 }
             }
         }
-        public CreateStudentView Student { get; set; }
+        public string Email { get; set; }
+        public string Name { get; set; }
         public bool Result { get; set; }
-        public StudentRegStatus Status { get; set; }
+        public StudentRegResults Status { get; set; }
         public string ErrorMessage { get; set; }
         public List<OrderToCourse> OrdersToCourse { get; set; }
     }
 
-    public enum StudentRegStatus { OK , ExistsEmail , NoValideModel , Exception , AlreadyOrdered}
+    public class SudentAddToCourseStatus {
+        public SudentAddToCourseStatus(string email , bool result , StudentRegResults status, IEnumerable<string> ErrorMessage)
+        {
+            this.Email = email;
+            this.Result = result;
+            this.Status = status;
+            if (Result)
+            {
+                this.ErrorMessage = "No errors";
+            }
+            else
+            {
+                foreach (var message in ErrorMessage)
+                {
+                    this.ErrorMessage += string.Format("Error: {0} ", message);
+                }
+            }
+        }
+        public string Email { get; set; }
+        public bool Result { get; set; }
+        public StudentRegResults Status { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+    public enum StudentRegResults { OK, EmailExists, NoValideModel, Exception, AlreadyOrdered, AlreadyParticipate }
 }

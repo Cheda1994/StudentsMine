@@ -7,11 +7,15 @@
     }
 
 </script>
-<h2>Course</h2>
-@*<div id="holder">
-    <div id="content">
-
-    </div>
-</div>*@
+<h2>@Model.Name Course</h2>
+<p>
+    <h3>@Model.Description</h3>
+</p>
+<p>
+    <div>Home Work</div>
+    <div>Projects hub</div>
+    <div>Course chat</div>
+</p>
+<div></div>
 @Html.ActionLink("Add students", "CreateStudent", "Student", new { id = ViewBag.CourseId } , null)
 <a onclick="holder(2)">Add home work</a>

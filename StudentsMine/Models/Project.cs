@@ -14,8 +14,11 @@ namespace StudentsMine.Models
             this.IsPublic = true;
         }
         public int Id { get; set; }
-        public Mark Mark { get; set; }
+        public int Mark { get; set; }
         public bool IsPublic { get; set; }
-        public Student Author { get; set; }
+        public FileData File { get; set; }
+        public virtual Student Author { get; set; }
+        public bool IsHomeWork { get; set; }
+        public virtual HomeWork HomeWork { get; set; }
     }
 }

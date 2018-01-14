@@ -1,0 +1,34 @@
+﻿@model List<StudentsMine.Models.OrderStudentToCourceView>
+@{
+    ViewBag.Title = "Register";
+}
+<script src="/Scripts/duplicator.js"> </script>
+<script src="/Scripts/createStudent.js"> </script>
+<h2>@ViewBag.Title.</h2>
+
+@using (Ajax.BeginForm("AddStudentToCourse", "Student", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divEmp" }, new { @class = "form-horizontal", role = "form" }))
+{
+
+
+    @Html.AntiForgeryToken();
+    <h4>Create a new account.</h4>
+    <hr />
+    @Html.ValidationSummary()
+    @Html.Hidden("courseId")
+    <div class="dublicate-data-group" index='0'>
+        <div class="form-group">
+            @Html.LabelFor(m => m[0].Email, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m[0].Email, new { @class = "form-control data-field" })
+            </div>
+        </div>
+    </div>
+    //First
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Register" />
+        </div>
+    </div>
+}

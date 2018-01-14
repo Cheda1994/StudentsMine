@@ -1,0 +1,46 @@
+﻿@model List<StudentsMine.Models.HomeWorkListView>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Has conditions</th>
+            <th>Finish until</th>
+            <th>Mark</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @item.HasCondition
+                </td>
+                <td>
+                    @item.ConditionUntil
+                </td>
+                <td>
+                    @item.Mark
+                </td>
+                <td hidden>
+                    <input id="id" value="@item.Id" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="selected-homework">
+
+</div>
