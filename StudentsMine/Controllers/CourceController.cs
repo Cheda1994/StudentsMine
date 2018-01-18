@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Text;
+using System.Data.Entity;
 
 namespace StudentsMine.Controllers
 {
@@ -128,5 +129,90 @@ namespace StudentsMine.Controllers
                 };
             }
         }
-	}
+
+        [HttpPost]
+        public async Task<ActionResult> UploadHomeWork(UploadHomeWork model)
+        {
+            Project project =  await context.Projects.FindAsync(model.ProjectId);
+            UploadHomeWorkResult projectValidation = CheckForHWConditions(project, model);
+                if (projectValidation.Result)
+                {
+                    string formatedString = FileData.FormatBase64(model.FileBase64Data);
+                    if (formatedString == "Exception")
+                    {
+                        projectValidation = new UploadHomeWorkResult(false, UploadHomeWorkStatus.Exception, "There is incorect file");
+                    }
+                    else 
+                    {
+                        FileData file = new FileData();
+                        file.Name = model.Name;
+                        file.Format = model.Format;
+                        byte[] formatedFile = Convert.FromBase64String(formatedString);
+                        file.Data = formatedFile;
+                        project.File = file;
+                        context.Entry(project).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+                }
+                var json = new JavaScriptSerializer().Serialize(projectValidation);
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json"
+                };
+        }
+
+        #region Private Helpers
+
+        private UploadHomeWorkResult CheckForHWConditions(Project project, UploadHomeWork model)
+        {
+            if (project != null)
+            {
+            if (project.IsHomeWork)
+	        {
+		    HomeWork homeWork = project.HomeWork;
+                if (homeWork.HasCondition)
+                {
+                    Condition condition = homeWork.Condition;
+                    if (condition.IsBlocked)
+                    {
+                        return new UploadHomeWorkResult(false , UploadHomeWorkStatus.AlreadyBloked , "This home work is already blocked");
+                    }
+                    else
+                    {
+                        if (condition.HasRequiredDate)
+                        {
+                            DateTime date = DateTime.Now;
+                            if (date != condition.Until)
+                            {
+                                return new UploadHomeWorkResult(false, UploadHomeWorkStatus.AlreadyBloked, "This home work is already blocked");
+                            }
+                        }
+                    }
+                    if (condition.RequiredFormat == model.Format)
+                    {
+                        return new UploadHomeWorkResult(true, UploadHomeWorkStatus.OK, "No errors");
+                    }
+                    else
+                    {
+                        return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorectFormat, "There is incorect file format");
+                    }
+                }
+                else
+                {
+                    return new UploadHomeWorkResult(true, UploadHomeWorkStatus.OK, "No errors");
+                }
+	        }
+            else
+	        {
+                return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorectFormat, "There is incorect project Id");
+	        }
+            }
+            else 
+            {
+                return new UploadHomeWorkResult(false, UploadHomeWorkStatus.Exception, "Exception"); 
+            }
+        }
+        #endregion
+    }
 }

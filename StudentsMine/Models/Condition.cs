@@ -8,6 +8,7 @@ namespace StudentsMine.Models
     public class Condition
     {
         public int Id { get; set; }
+        public bool HasRequiredDate { get; set; }
         public DateTime? Until { get; set; }
         public bool IsBlocked { get; set; }
         public bool HasRequiredFormat { get; set; }
