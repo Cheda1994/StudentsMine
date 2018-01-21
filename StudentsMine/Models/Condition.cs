@@ -7,6 +7,10 @@ namespace StudentsMine.Models
 {
     public class Condition
     {
+        public Condition()
+        {
+            this.IsBlocked = false;
+        }
         public int Id { get; set; }
         public bool HasRequiredDate { get; set; }
         public DateTime? Until { get; set; }

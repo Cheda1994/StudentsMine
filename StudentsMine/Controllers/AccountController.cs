@@ -268,8 +268,12 @@ namespace StudentsMine.Controllers
 
         private async Task SignInAsync(ApplicationUser user, bool isPersistent)
         {
+
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            identity.AddClaims(new[] {
+                new Claim("CurrentRole",user.Role)
+            });
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         }
 

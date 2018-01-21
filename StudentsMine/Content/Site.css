@@ -55,5 +55,64 @@ input[type="checkbox"].input-validation-error {
 }
 
 #selected-homework {
+    overflow-y: auto;
+    padding:5px;
+    border-radius:10px;
     width:300px;
+    position:relative;
+    display:inline-block;
+    vertical-align:top;
+    min-height:400px;
+    max-height:400px;
+    background-color:#80808052;
+}
+
+.homework-data-row td {
+    min-width:100px;
+    max-width:400px;
+    padding: 3px;
+}
+
+.homework-data-row {
+    transition:0.5s;
+}
+
+.homework-data-row:hover {
+    transition:1s;
+    background-color:#80808052;
+    cursor:pointer;
+}
+
+#home-work-list{
+    overflow-y: auto;
+    display:inline-block;
+    vertical-align:top;
+}
+
+#home-work-prop-holder{
+    text-align:center;
+    font-size: 25px;
+    color: gray;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.project-row {
+    margin:2px;
+    background-color: white;
+    padding: 5px;
+    border: 2px solid;
+    border-radius: 5px;
+}
+
+.project-row:hover {
+    cursor:pointer;
+    transition: 0.3s;
+    background-color:#80808052;
+}
+
+.project-info {
+    display:none;
 }

@@ -1,19 +1,22 @@
-﻿@model List<StudentsMine.Models.HomeWorkListView>
+﻿@model List<StudentsMine.Models.HomeWorkStudentListView>
 @{
     ViewBag.Title = "Index";
 }
+
 <script>
     var file ;
     var selectedProjectId;
     var fileName;
     var fileBase64;
     var fileFormat;
+    var threadOnLoad = false;
     var reader = new FileReader();
     reader.onload = function () {
         var sliceResult = reader.result.split(',');
         fileFormat = sliceResult[0];
         fileBase64 = sliceResult[1];
         var sendButton = document.createElement("a")
+        sendButton.setAttribute("class", "btn btn-success")
         sendButton.onclick = UploadProject;
         sendButton.text = "Send";
         var selectedHomeWork = $("#selected-homework")[0];
@@ -24,28 +27,44 @@
         file = {};
         $(".homework-data-row").each(function (index, node) {
             node.onclick = function () {
-                console.log(this)
+                if (threadOnLoad) {
+                    $.amaran({
+                        'message': 'The tread is already busy',
+                        'position': 'bottom',
+                        'outEffect': 'slideLeft'
+                    });
+                }
+                else
+                {
+                threadOnLoad = true;
                 var id = this.getElementsByClassName("id")[0];
                 selectedProjectId = parseInt(id.value);
-
+                $.ajax({
+                    url: "/Cource/GetHWProject?projectId=" + selectedProjectId,
+                    type: "GET",
+                    success: function (homeWork) {
+                        threadOnLoad = false;
+                        $("#home-work-prop-holder").fadeOut(100);
+                        feedHomeWorkPresentation(homeWork);
+                    },
+                    error: function (error) {
+                        threadOnLoad = false;
+                    }
+                })
+                }
             }
         })
     })
 
-    $.ajax({
-        url: "/Cource/GetHWProject?projectId=1",
-        type: "GET",
-        success: function (homeWork) {
-            feedHomeWorkPresentation(homeWork)
-        },
-        error: function (error) {
-        }
-    })
+
     function feedHomeWorkPresentation(homeWork) {
         var selectedHomeWork = $("#selected-homework")[0];
         var hwTitleNode = $("#hwDescription")[0]
+        hwTitleNode.innerHTML = "";
         var hwAttachmentsNode = $("#hwAttachments")[0]
+        hwAttachmentsNode.innerHTML = "";
         var hwConditionsNode = $("#hwConditions")[0]
+        hwConditionsNode.innerHTML = "";
         var hwTitle = document.createElement("h2")
         var hwDescription = document.createElement("h3")
         var hwMark = document.createElement("b")
@@ -66,8 +85,7 @@
         hwInputFile.onchange = function () 
         {
             reader.readAsDataURL(this.files[0]);
-            fileName = this.files[0].name
-
+            fileName = this.files[0].name;
         }
         hwTitleNode.appendChild(hwTitle);
         hwTitleNode.appendChild(hwMark);
@@ -86,7 +104,14 @@
             data: JSON.stringify({ model: file }),
             contentType: 'application/json',
             success: function (data) {
-                console.log(data)
+                if (data.Result) {
+                    $.amaran({
+                        'message': 'Project was successfuly updated',
+                        'position': 'bottom',
+                        'outEffect': 'slideLeft'
+                    });
+                }
+
             },
             error: function (error) {
                 alert(error)
@@ -95,45 +120,46 @@
     }
 </script>
 
-<h2>Index</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Has conditions</th>
-            <th>Finish until</th>
-            <th>Mark</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="homework-data-row">
-                <td>
-                    @item.Title
-                </td>
-                <td>
-                    @item.Description
-                </td>
-                <td>
-                    @item.HasCondition
-                </td>
-                <td>
-                    @item.ConditionUntil
-                </td>
-                <td>
-                    @item.Mark
-                </td>
-                <td hidden>
-                    <input class="id" value="@item.Id" />
-                </td>
+<div id="home-work-list">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Finish until</th>
+                <th>Mark</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @ViewBag.Role
+            @foreach (var item in Model)
+            {
+                <tr class="homework-data-row">
+                    <td>
+                        @item.Title
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+                    <td>
+                        @item.ConditionUntil
+                    </td>
+                    <td>
+                        @item.Mark
+                    </td>
+                    <td hidden>
+                        <input class="id" value="@item.Id" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 <div id="selected-homework">
+    <div id="home-work-prop-holder">
+        Selected home work
+    </div>
     <div id="hwDescription">
     </div>
     <div id="hwAttachments">

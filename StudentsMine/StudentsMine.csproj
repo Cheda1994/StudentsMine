@@ -239,6 +239,14 @@
     <Compile Include="Migrations\201801171816062_I_HaveChangeSomethonck.Designer.cs">
       <DependentUpon>201801171816062_I_HaveChangeSomethonck.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801191740056_AddCreateDateToHW.cs" />
+    <Compile Include="Migrations\201801191740056_AddCreateDateToHW.Designer.cs">
+      <DependentUpon>201801191740056_AddCreateDateToHW.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801201154444_AddUploadStatusToHomeWorkProject.cs" />
+    <Compile Include="Migrations\201801201154444_AddUploadStatusToHomeWorkProject.Designer.cs">
+      <DependentUpon>201801201154444_AddUploadStatusToHomeWorkProject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Condition.cs" />
@@ -364,6 +372,7 @@
     <Content Include="Views\Cource\AddHomeWork.cshtml" />
     <Content Include="Views\Student\AddStudentToCourse.cshtml" />
     <Content Include="Views\Cource\HomeWork\Index.cshtml" />
+    <Content Include="Views\Cource\HomeWork\TeacherHWIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -431,6 +440,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801171816062_I_HaveChangeSomethonck.resx">
       <DependentUpon>201801171816062_I_HaveChangeSomethonck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801191740056_AddCreateDateToHW.resx">
+      <DependentUpon>201801191740056_AddCreateDateToHW.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801201154444_AddUploadStatusToHomeWorkProject.resx">
+      <DependentUpon>201801201154444_AddUploadStatusToHomeWorkProject.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

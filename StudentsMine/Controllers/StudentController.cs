@@ -146,7 +146,6 @@ namespace StudentsMine.Controllers
             {
                 return new SudentAddToCourseStatus(email, false, StudentRegResults.Exception, new List<string> { ex.Message });
             }
-
         }
 
 

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Text;
 using System.Data.Entity;
+using System.Security.Claims;
 
 namespace StudentsMine.Controllers
 {
@@ -21,7 +22,17 @@ namespace StudentsMine.Controllers
         private ApplicationDbContext context = new ApplicationDbContext();
 
         private string currentUserId { 
-            get { return User.Identity.GetUserId(); }
+            get {
+                return User.Identity.GetUserId(); }
+        }
+
+        private string currentUserRole
+        {
+            get
+            {
+                string roleNames = ((ClaimsIdentity)User.Identity).FindFirst("CurrentRole").Value;
+                return roleNames;
+            }
         }
         //
         // GET: /Cource/
@@ -94,15 +105,19 @@ namespace StudentsMine.Controllers
         }
 
         public ActionResult HomeWorkIndex(int courseId) {
-            List<Project> projects = context.Projects.Where(p => p.IsHomeWork==true && p.HomeWork.Course.Id == courseId && p.Author.ApplicationUser.Id == currentUserId).ToList();
-            List<HomeWorkListView> hwList = new List<HomeWorkListView>();
-            foreach (var project in projects)
+            switch (currentUserRole)
             {
-                HomeWorkListView homeWork = new HomeWorkListView(project);
-                hwList.Add(homeWork);
+                case "Teacher":
+                    return TeacherHomeWorkIndex(courseId);
+                case "Student":
+                    return StudentHomeWorkIndex(courseId);
+                default:
+                    return View();
             }
-            return View("~/Views/Cource/HomeWork/Index.cshtml", hwList);
+            
         }
+
+
 
         [HttpGet]
         public async Task<ContentResult> GetHWProject(int projectId)
@@ -150,6 +165,7 @@ namespace StudentsMine.Controllers
                         byte[] formatedFile = Convert.FromBase64String(formatedString);
                         file.Data = formatedFile;
                         project.File = file;
+                        project.IsUploaded = true;
                         context.Entry(project).State = EntityState.Modified;
                         context.SaveChanges();
                     }
@@ -158,9 +174,50 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = "application/json",
+                    ContentEncoding = Encoding.UTF8
                 };
         }
+
+        [Authorize(Roles="Teacher")]
+        public async Task<ActionResult> GetHWProjectsList(int homeworkId)
+        {
+            HomeWorkProjectsList projects = new HomeWorkProjectsList();
+            var homeWork = await context.Homeworks.FindAsync(homeworkId);
+            if (homeWork != null)
+            {
+                if (homeWork.Course.Teacher.ApplicationUser.Id == currentUserId)
+                {
+                    foreach (var project in homeWork.Projects)
+                    {
+                        projects.Projects.Add(new HomeWorkProject(project));
+                    }
+                    projects.Result = true;
+                    projects.ErrorMessage = "No errors";
+                    projects.Status = HomeWorkStatus.OK;
+                }
+                else
+                {
+                    projects.Result = false;
+                    projects.ErrorMessage = "The ID of homework is incorrect";
+                    projects.Status = HomeWorkStatus.IncorrectHWID;
+                }
+            }
+            else
+            {
+                projects.Result = false;
+                projects.ErrorMessage = "The HW is not define in the DB";
+                projects.Status = HomeWorkStatus.CannotFindHW;
+            }
+            var json = new JavaScriptSerializer().Serialize(projects);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json",
+                ContentEncoding = Encoding.UTF8
+            };
+        }
+
 
         #region Private Helpers
 
@@ -195,7 +252,7 @@ namespace StudentsMine.Controllers
                     }
                     else
                     {
-                        return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorectFormat, "There is incorect file format");
+                        return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorrectFormat, "There is incorect file format");
                     }
                 }
                 else
@@ -205,7 +262,7 @@ namespace StudentsMine.Controllers
 	        }
             else
 	        {
-                return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorectFormat, "There is incorect project Id");
+                return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorrectFormat, "There is incorect project Id");
 	        }
             }
             else 
@@ -213,6 +270,115 @@ namespace StudentsMine.Controllers
                 return new UploadHomeWorkResult(false, UploadHomeWorkStatus.Exception, "Exception"); 
             }
         }
+
+        private ActionResult StudentHomeWorkIndex(int courseId)
+        {
+            List<Project> projects = context.Projects.Where(p => p.IsHomeWork == true && p.HomeWork.Course.Id == courseId && p.Author.ApplicationUser.Id == currentUserId).ToList();
+            List<HomeWorkStudentListView> hwList = new List<HomeWorkStudentListView>();
+            foreach (var project in projects)
+            {
+                HomeWorkStudentListView homeWork = new HomeWorkStudentListView(project);
+                hwList.Add(homeWork);
+            }
+            return View("~/Views/Cource/HomeWork/Index.cshtml", hwList);
+        }
+
+        private ActionResult TeacherHomeWorkIndex(int courseId)
+        {
+            context.Configuration.LazyLoadingEnabled = false;
+            IQueryable<HomeWork> homeWork = context.Homeworks.Where(hw => hw.Course.Id == courseId );
+            return View("~/Views/Cource/HomeWork/TeacherHWIndex.cshtml", homeWork);
+        }
         #endregion
+
+        [Authorize(Roles="Teacher")]
+        public ContentResult GetFile(int projectId)
+        {
+            var project = context.Projects.Include("File").Where(x => x.Id == projectId).SingleOrDefault();
+            if (project.IsUploaded)
+            {
+                if (project.IsPublic)
+                {
+                    var file = project.File;
+                    var base64 = Convert.ToBase64String(file.Data);
+                    var format = file.Format;
+                    var name = file.Name;
+                    return new ContentResult()
+                    {
+                        Content = format + "," + base64
+                    };
+                }
+                else if (project.Author.ApplicationUser.Id == currentUserId | project.HomeWork.Course.Teacher.ApplicationUser.Id == currentUserId)
+                {
+                    var file = project.File;
+                    var base64 = Convert.ToBase64String(file.Data);
+                    var format = file.Format;
+                    var name = file.Name;
+                    return new ContentResult()
+                    {
+                        Content = format + "," + base64
+                    };
+                }
+                else { 
+                    return new ContentResult()
+                    {
+                        Content = "You have no access"
+                    };
+                }
+            }
+            else
+            {
+                return new ContentResult()
+                {
+                    Content = "The project was no uploaded"
+                };
+            }
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public async Task<ActionResult> ChangeMark(int projectId , int mark)
+        {
+            RequestStatus result;
+            var project = await context.Projects.FindAsync(projectId);
+            if (project != null)
+            {
+                if (project.IsHomeWork)
+                {
+                    if (project.HomeWork.Course.Teacher.ApplicationUser.Id == currentUserId)
+                    {
+                        project.Mark = mark;
+                        context.Entry(project).State = EntityState.Modified;
+                        context.SaveChanges();
+                        result = new RequestStatus();
+                        result.Result = true; 
+                        result.ErrorMessage = "No Errors";
+                    }
+                    else
+                    {
+                        result = new RequestStatus();
+                        result.Result = false; 
+                        result.ErrorMessage = "The project is available for you";
+                    }
+                }
+                else
+                {
+                    result = new RequestStatus();
+                    result.Result = false; 
+                    result.ErrorMessage = "The project is not home work";
+                }
+            }
+            else
+            {
+                result = new RequestStatus();
+                result.Result = false; 
+                result.ErrorMessage = "The project is not found";
+            }
+            var json = new JavaScriptSerializer().Serialize(result);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json"
+            };
+        }
     }
 }
