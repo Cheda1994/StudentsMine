@@ -19,7 +19,7 @@ namespace StudentsMine.Models
         public virtual Course Course { get; set; }
         public virtual Condition Condition { get; set; }
         public virtual ICollection<Project> Projects { get; set; }
-        public DateTime Create { get; set; }
+        public DateTime? Create { get; set; }
 
         public void  InitProjects(Course course) 
         {

@@ -32,6 +32,12 @@ namespace StudentsMine.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<HomeWork>()
+                .HasMany(hw => hw.Projects)
+                .WithOptional(p => p.HomeWork).HasForeignKey(x => x.HomeWork_Id)
+                .WillCascadeOnDelete(true);
         }
     }
 }

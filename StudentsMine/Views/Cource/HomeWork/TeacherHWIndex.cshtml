@@ -82,6 +82,40 @@
         })
     }
 
+    function blockHomeWork(id , caller) {
+        console.log(caller)
+        $.ajax({
+            url:"/Cource/BlockHomeWork?homeworkId="+id,
+            type: "POST",
+            contentType: "application/json",
+            success: function(data){
+                console.log(data);
+            }
+        })
+    
+    }
+
+    function removeHomeWork(homeworkId , node){
+        $.ajax({
+            url:"/Cource/RemoveHW?homeworkId="+homeworkId,
+            type:"GET",
+            contentType: "application/json",
+            success:function(result){
+                if (result.Result) {
+                    $(this).fadeOut(500);
+
+                }else{
+                    $.amaran({
+                        'message': result.ErrorMessage ,
+                        'position': 'bottom',
+                        'outEffect': 'slideLeft'
+                    });
+                }
+
+            }
+        })
+    }
+
     function changeMark(projectId){
         var mark = parseInt($("#mark_"+projectId).val());
         console.log(mark == null);
@@ -139,8 +173,22 @@
                 <td>@item.Description</td>
                 <td>@item.Create</td>
                 <td>Edit</td>
-                <td>Remove</td>
-                <td>Block</td>
+                <td onclick="removeHomeWork(@item.Id , this )">Remove</td>
+                @if (@item.Condition != null)
+                {
+                    if (@item.Condition.IsBlocked)
+                    {
+                        <td onclick="blockHomeWork(@item.Id , this)"> UnBlock</td>
+                    }                
+                    else
+                    {
+                        <td onclick="blockHomeWork(@item.Id , this)"> Block</td>
+                    }
+                }
+                else
+                {
+                    <td onclick="blockHomeWork(@item.Id , this)"> Block</td>
+                }
             </tr>
         }
         </tbody>
@@ -151,5 +199,4 @@
     <div id="home-work-prop-holder">
         Selected home work
     </div>
-
 </div>

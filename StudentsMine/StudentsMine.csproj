@@ -247,6 +247,22 @@
     <Compile Include="Migrations\201801201154444_AddUploadStatusToHomeWorkProject.Designer.cs">
       <DependentUpon>201801201154444_AddUploadStatusToHomeWorkProject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801241417249_HW_Projects_Rel.cs" />
+    <Compile Include="Migrations\201801241417249_HW_Projects_Rel.Designer.cs">
+      <DependentUpon>201801241417249_HW_Projects_Rel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801241423460_HW_Projects_Rel1.cs" />
+    <Compile Include="Migrations\201801241423460_HW_Projects_Rel1.Designer.cs">
+      <DependentUpon>201801241423460_HW_Projects_Rel1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801241429062_ChangeDTFormatOnHW.cs" />
+    <Compile Include="Migrations\201801241429062_ChangeDTFormatOnHW.Designer.cs">
+      <DependentUpon>201801241429062_ChangeDTFormatOnHW.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801241615041_HW_Projects_Rel2.cs" />
+    <Compile Include="Migrations\201801241615041_HW_Projects_Rel2.Designer.cs">
+      <DependentUpon>201801241615041_HW_Projects_Rel2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Condition.cs" />
@@ -373,6 +389,7 @@
     <Content Include="Views\Student\AddStudentToCourse.cshtml" />
     <Content Include="Views\Cource\HomeWork\Index.cshtml" />
     <Content Include="Views\Cource\HomeWork\TeacherHWIndex.cshtml" />
+    <Content Include="Views\Cource\HomeWork\_EditHomeWork.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -446,6 +463,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801201154444_AddUploadStatusToHomeWorkProject.resx">
       <DependentUpon>201801201154444_AddUploadStatusToHomeWorkProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801241417249_HW_Projects_Rel.resx">
+      <DependentUpon>201801241417249_HW_Projects_Rel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801241423460_HW_Projects_Rel1.resx">
+      <DependentUpon>201801241423460_HW_Projects_Rel1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801241429062_ChangeDTFormatOnHW.resx">
+      <DependentUpon>201801241429062_ChangeDTFormatOnHW.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801241615041_HW_Projects_Rel2.resx">
+      <DependentUpon>201801241615041_HW_Projects_Rel2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

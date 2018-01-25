@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -20,6 +21,7 @@ namespace StudentsMine.Models
         public virtual Student Author { get; set; }
         public bool IsHomeWork { get; set; }
         public bool IsUploaded { get; set; }
+        public int? HomeWork_Id { get; set; }
         public virtual HomeWork HomeWork { get; set; }
     }
 }
