@@ -1,55 +1,85 @@
-﻿<div class="form-horizontal">
-    <h4>HomeWork</h4>
+﻿@model StudentsMine.Models.HomeWork
+
+@{
+    ViewBag.Title = "AddHomeWork";
+}
+@Scripts.Render("~/bundles/jquery")
+<script src="/Scripts/duplicator.js"> </script>
+<script>
+    Duplicator("dublicate-data-group", "data-field", "form")
+</script>
+@using (Html.BeginForm("AddHomeWork", "Cource", new { courseId = ViewBag.CourceId }, FormMethod.Post, new { id = "form"}))
+{
+
+
+    <div class="form-horizontal">
+        <h4>HomeWork</h4>
         <hr />
+        @Html.ValidationSummary(true)
+
         <div class="form-group">
-            Title
+            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="text" name="Title" />
+                @Html.TextBoxFor(model => model.Title)
+                @Html.ValidationMessageFor(model => model.Title)
             </div>
         </div>
 
         <div class="form-group">
-            Description
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <textarea name="Description"></textarea>
+                @Html.TextBoxFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
             </div>
         </div>
 
         <div class="form-group">
-            HasCondition
+            @Html.LabelFor(model => model.HasCondition, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="checkbox" name="hasRequired" />
+                @Html.CheckBoxFor(model => model.HasCondition)
+                @Html.ValidationMessageFor(model => model.HasCondition)
             </div>
         </div>
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.Attachments, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 dublicate-data-group" index='0'>
+                <input type="file" name="[0].Attachments" class="data-field" multiple/>
+
+            </div>
+        </div>
 
         <div id="condition">
             <h2>Condition</h2>
             <div class="form-group">
-                Until
+                @Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="text" name="Condition.Until" />
+                    @Html.TextBoxFor(model => model.Condition.Until)
+                    @Html.ValidationMessageFor(model => model.Condition.Until)
                 </div>
             </div>
 
             <div class="form-group">
-                IsBlocked
+                @Html.LabelFor(model => model.Condition.IsBlocked, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="checkbox" name="Condition.IsBlocked" />
+                    @Html.CheckBoxFor(model => model.Condition.IsBlocked)
+                    @Html.ValidationMessageFor(model => model.Condition.IsBlocked)
                 </div>
             </div>
 
             <div class="form-group">
-               HasRequiredFormat
+                @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="checkbox" name="Condition.HasRequiredFormat" />
+                    @Html.CheckBoxFor(model => model.Condition.HasRequiredFormat)
+                    @Html.ValidationMessageFor(model => model.Condition.HasRequiredFormat)
                 </div>
             </div>
 
             <div class="form-group">
-                RequiredFormat
+                @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    <input type="text" name="Condition.RequiredFormat" />
+                    @Html.TextBoxFor(model => model.Condition.RequiredFormat)
+                    @Html.ValidationMessageFor(model => model.Condition.RequiredFormat)
                 </div>
             </div>
         </div>

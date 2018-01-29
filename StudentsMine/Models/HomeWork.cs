@@ -15,7 +15,7 @@ namespace StudentsMine.Models
             this.Course = cource;
             InitProjects(cource.Students);
         }
-        public ICollection<FileData> Attachments { get; set; }
+        public List<FileData> Attachments { get; set; }
         public virtual Course Course { get; set; }
         public virtual Condition Condition { get; set; }
         public virtual ICollection<Project> Projects { get; set; }

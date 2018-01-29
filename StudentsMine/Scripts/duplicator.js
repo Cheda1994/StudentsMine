@@ -26,15 +26,33 @@ $(document).ready(function () {
     }
 
     node.addEventListener("input", inputListener)
+    for (var i = 0; i < node.children.length; i++) {
+        if (node.children[i].type == "file") {
+            node.children[i].addEventListener("change", function () { 
+            var event = document.createEvent("Event")
+            event.initEvent("input")
+            node.dispatchEvent(event)
+            })
+        }
+    }
 
     function analizeFields(node) {
         var inputs = node.getElementsByClassName(inputsClass)
         var counterString = "";
         for (var i = 0; i < inputs.length; i++) {
-            counterString += inputs[i].value
+            if (inputs[i].type == "file") {
+                if (inputs[i].value.length > 0) {
+                    counterString += "!"
+                } else {
+                    counterString += ""
+                }
+            } else {
+                counterString += inputs[i].value
+            }
+            
         }
         var formatedString = counterString.replace(/\s/g, '');
-        return formatedString.length;
+        return counterString.length;
     }
 
     function redistributeTriggers(index, method) {
@@ -74,6 +92,15 @@ $(document).ready(function () {
         var clone = emptyNodeClone.cloneNode(true);
         clone.setAttribute("index", counter);
         clone.addEventListener("input", inputListener)
+        for (var i = 0; i < clone.children.length; i++) {
+            if (clone.children[i].type == "file") {
+                clone.children[i].addEventListener("change", function () {
+                    var event = document.createEvent("Event")
+                    event.initEvent("input")
+                    clone.dispatchEvent(event)
+                })
+            }
+        }
         return clone
     }
 
@@ -92,6 +119,10 @@ $(document).ready(function () {
             }
         })
         counter = redistributedCounter;
+    }
+
+    function getJSON() {
+        prepareFieldsBeforeSend();
     }
 
     $("#"+formId).submit(function () {

@@ -3,11 +3,11 @@
 @{
     ViewBag.Title = "AddHomeWork";
 }
-
+<script src="/Scripts/duplicator.js"> </script>
 <script>
-
+    Duplicator("dublicate-data-group", "data-field", "form")
 </script>
-@using (Html.BeginForm("AddHomeWork", "Cource" , new {courseId=ViewBag.CourceId}))
+@using (Html.BeginForm("AddHomeWork", "Cource", new { courseId = ViewBag.CourceId }, FormMethod.Post, new { id = "form" }))
 {
     
 
@@ -37,6 +37,13 @@
             <div class="col-md-10">
                 @Html.CheckBoxFor(model => model.HasCondition)
                 @Html.ValidationMessageFor(model => model.HasCondition)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Attachments, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 dublicate-data-group" index="0">
+                <input type="text" name="[0].Attachments.Name" class="data-field" />
             </div>
         </div>
 

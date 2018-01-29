@@ -470,6 +470,9 @@ namespace StudentsMine.Controllers
 
 
 
-
+        public PartialViewResult GetMenu()
+        {
+            return PartialView("~/Views/Cource/HomeWork/_EditHomeWork.cshtml");
+        }
     }
 }
