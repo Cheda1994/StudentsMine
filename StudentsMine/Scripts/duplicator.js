@@ -1,7 +1,13 @@
-﻿function Duplicator(containerClass , inputsClass , formId){
-    var counter;
-    var triggers;
-    var emptyTriggerIndex;
+﻿var counter;
+var trigers;
+var emptyTriggerIndex;
+var containerClass;
+var inputsClass;
+var formId;
+function Duplicator(conClass, inpClass, foId) {
+    containerClass = conClass;
+    inputsClass = inpClass;
+    formId = foId;
     const EMPTY_NODE = 0;
     const FILLED_NODE = 1;
     const NOT_AVAILABLE_NODE = 2;
@@ -104,22 +110,7 @@ $(document).ready(function () {
         return clone
     }
 
-    function prepareFieldsBeforeSend() {
-        var redistributedCounter = 0;
-        trigers.forEach(function (node, index) {
-            if (node == 1) {
-                var currentNode = $('.' + containerClass + '[index=' + index + ']')[0];
-                var nodeInputs = currentNode.getElementsByClassName(inputsClass);
-                for (var i = 0; i < nodeInputs.length ; i++) {
-                    nodeInputs[i].name = nodeInputs[i].name.replace(/\[(.*?)\]/, "[" + redistributedCounter + "]")
-                    console.log(nodeInputs[i].name)
-                }
-                currentNode.setAttribute("index", redistributedCounter);
-                redistributedCounter++;
-            }
-        })
-        counter = redistributedCounter;
-    }
+
 
     function getJSON() {
         prepareFieldsBeforeSend();
@@ -128,5 +119,30 @@ $(document).ready(function () {
     $("#"+formId).submit(function () {
         prepareFieldsBeforeSend();
     })
+    function rebuild(){
+        prepareFieldsBeforeSend();
+    }
 })
+}
+
+function rebuild() {
+    prepareFieldsBeforeSend();
+}
+
+function prepareFieldsBeforeSend() {
+    var redistributedCounter = 0;
+    trigers.forEach(function (node, index) {
+        if (node == 1) {
+            var currentNode = $('.' + containerClass + '[index=' + index + ']')[0];
+            var nodeInputs = currentNode.getElementsByClassName(inputsClass);
+            for (var i = 0; i < nodeInputs.length ; i++) {
+                nodeInputs[i].name = nodeInputs[i].name.replace(/\[(.*?)\]/, "[" + redistributedCounter + "]")
+                console.log(nodeInputs[i].name)
+            }
+            currentNode.setAttribute("index", redistributedCounter);
+            redistributedCounter++;
+        }
+    })
+    counter = redistributedCounter;
+    return true;
 }

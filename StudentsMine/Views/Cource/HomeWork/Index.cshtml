@@ -104,9 +104,16 @@
             data: JSON.stringify({ model: file }),
             contentType: 'application/json',
             success: function (data) {
+                console.log(data)
                 if (data.Result) {
                     $.amaran({
                         'message': 'Project was successfuly updated',
+                        'position': 'bottom',
+                        'outEffect': 'slideLeft'
+                    });
+                } else {
+                    $.amaran({
+                        'message': data,
                         'position': 'bottom',
                         'outEffect': 'slideLeft'
                     });

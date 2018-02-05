@@ -331,7 +331,9 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\createStudent.js" />
+    <Content Include="Scripts\duplic.js" />
     <Content Include="Scripts\duplicator.js" />
+    <Content Include="Scripts\inputSerializer.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
     <Content Include="Scripts\jquery-1.12.4.min.map" />

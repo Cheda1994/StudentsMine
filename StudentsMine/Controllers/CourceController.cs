@@ -86,7 +86,7 @@ namespace StudentsMine.Controllers
             Course cource = context.Courses.Find(courceId);
             HomeWork homeWork = new HomeWork(cource);
             ViewBag.CourceId = courceId;
-            return View();
+            return View(homeWork);
         }
 
         
@@ -145,13 +145,20 @@ namespace StudentsMine.Controllers
                             }
                         }
                     }
-                    if (condition.RequiredFormat == model.Format)
+                    if (condition.HasRequiredFormat)
                     {
-                        return new UploadHomeWorkResult(true, UploadHomeWorkStatus.OK, "No errors");
+                        if (condition.RequiredFormat == model.Format)
+                        {
+                            return new UploadHomeWorkResult(true, UploadHomeWorkStatus.OK, "No errors");
+                        }
+                        else
+                        {
+                            return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorrectFormat, "There is incorect file format");
+                        }
                     }
                     else
                     {
-                        return new UploadHomeWorkResult(false, UploadHomeWorkStatus.IncorrectFormat, "There is incorect file format");
+                        return new UploadHomeWorkResult(true, UploadHomeWorkStatus.OK, "No errors");
                     }
                 }
                 else
@@ -470,7 +477,7 @@ namespace StudentsMine.Controllers
 
 
 
-        public PartialViewResult GetMenu()
+        public PartialViewResult EditHomeWork()
         {
             return PartialView("~/Views/Cource/HomeWork/_EditHomeWork.cshtml");
         }

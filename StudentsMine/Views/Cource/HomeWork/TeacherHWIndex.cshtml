@@ -44,7 +44,6 @@
             changeMark(project.ProjectId) 
         }
         var buttonBlockThisProject = document.createElement("a");
-        buttonChangeMark.text = "Block"
         buttonChangeMark.onclick = function () {
             changeMark(project.ProjectId) 
         }
@@ -74,10 +73,12 @@
             url:"/Cource/GetFile?projectId="+projectId,
             type:"GET",
             success:function(file){
-                var button = document.createElement("a");
-                button.href = file;
-                button.click();
-                button = null;
+                var hiddenElement = document.createElement('a');
+                hiddenElement.href = file;
+                hiddenElement.target = '_blank';
+                hiddenElement.download = 'download';
+                hiddenElement.click();
+
             }
         })
     }
@@ -89,7 +90,11 @@
             type: "POST",
             contentType: "application/json",
             success: function(data){
-                console.log(data);
+                $.amaran({
+                    'message': 'Was succesfuly ' + caller.innerText +'ed',
+                    'position': 'bottom',
+                    'outEffect': 'slideLeft'
+                });
             }
         })
     
@@ -200,4 +205,4 @@
         Selected home work
     </div>
 </div>
-<iframe src="/Cource/GetMenu"></iframe>
+<iframe id="fileFrame" src="" hidden></iframe>

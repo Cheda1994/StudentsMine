@@ -4,8 +4,48 @@
     ViewBag.Title = "AddHomeWork";
 }
 <script src="/Scripts/duplicator.js"> </script>
+<script src="/Scripts/inputSerializer.js"> </script>
 <script>
-    Duplicator("dublicate-data-group", "data-field", "form")
+    var data_field = new Duplicator("dublicate-data-group", "data-field", "formClick");
+    function rebuildFiles() {
+        var fileInputs = $('input[type=file]')
+        fileInputs.each(function (index, node) {
+            if (node.files[0] != undefined) {
+                var name = document.createElement('input');
+                var dataBase64 = document.createElement('input');
+                var format = document.createElement('input');
+                var reader = new FileReader();
+                reader.readAsDataURL(node.files[0])
+                reader.onload = function () {
+                    name.value = node.files[0].name;
+                    dataBase64.value = reader.result;
+                    format.value = node.files[0].type;
+                }
+                name.setAttribute('class',  'data');
+                dataBase64.setAttribute('class', 'data');
+                format.setAttribute('class', 'data');
+
+                name.setAttribute('name', node.name + '%Name');
+                dataBase64.setAttribute('name', node.name + '%DataBase64');
+                format.setAttribute('name', node.name + '%Format');
+                name.hidden = true;
+                dataBase64.hidden = true;
+                format.hidden = true;
+                node.appendChild(name);
+                node.appendChild(dataBase64);
+                node.appendChild(format);
+            }
+        })
+    }
+    var json;
+    function sendAction() {
+        //rebuild();
+        //rebuildFiles();
+        $.when(rebuild(), rebuildFiles()).done(function () { 
+            json = test();
+        })
+    }
+
 </script>
 @using (Html.BeginForm("AddHomeWork", "Cource", new { courseId = ViewBag.CourceId }, FormMethod.Post, new { id = "form" }))
 {
@@ -19,31 +59,28 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Title)
-                @Html.ValidationMessageFor(model => model.Title)
+                <input type="text" class="data" name="Title" />
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Description)
-                @Html.ValidationMessageFor(model => model.Description)
+                <input type="text" class="data" name="Description" />
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.HasCondition, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.CheckBoxFor(model => model.HasCondition)
-                @Html.ValidationMessageFor(model => model.HasCondition)
+                <input type="checkbox" class="data"  name="HasCondition" />
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Attachments, new { @class = "control-label col-md-2" })
             <div class="col-md-10 dublicate-data-group" index="0">
-                <input type="text" name="[0].Attachments.Name" class="data-field" />
+                <input type="file" name="[0].Attachments" class="data-field" />
             </div>
         </div>
 
@@ -53,43 +90,40 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Condition.Until)
-                    @Html.ValidationMessageFor(model => model.Condition.Until)
+                    <input type="text" class="data" name="Condition%Until" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.IsBlocked, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.CheckBoxFor(model => model.Condition.IsBlocked)
-                    @Html.ValidationMessageFor(model => model.Condition.IsBlocked)
+                    <input type="text" class="data" name="Condition%IsBlocked" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.CheckBoxFor(model => model.Condition.HasRequiredFormat)
-                    @Html.ValidationMessageFor(model => model.Condition.HasRequiredFormat)
+                    <input type="checkbox" class="data" name="Condition%HasRequiredFormat" />
                 </div>
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Condition.RequiredFormat)
-                    @Html.ValidationMessageFor(model => model.Condition.RequiredFormat)
+                    <input type="text" class="data" name="Condition%RequiredFormat" />
                 </div>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
+                <a href="#" onclick="sendAction(); return false;" id="formClick">AAAAAAAAA</a>
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
-
+<form id="form1"></form>
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>

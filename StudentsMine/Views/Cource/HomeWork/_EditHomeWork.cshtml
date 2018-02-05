@@ -20,7 +20,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Title)
+                @Html.TextBoxFor(model => model.Title, new { @class = "json_data" })
                 @Html.ValidationMessageFor(model => model.Title)
             </div>
         </div>
@@ -28,7 +28,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Description)
+                @Html.TextBoxFor(model => model.Description, new { @class = "json_data" })
                 @Html.ValidationMessageFor(model => model.Description)
             </div>
         </div>
@@ -36,7 +36,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.HasCondition, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.CheckBoxFor(model => model.HasCondition)
+                @Html.CheckBoxFor(model => model.HasCondition, new { @class = "json_data" })
                 @Html.ValidationMessageFor(model => model.HasCondition)
             </div>
         </div>
@@ -54,7 +54,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Condition.Until)
+                    @Html.TextBoxFor(model => model.Condition.Until, new { @class = "json_data" })
                     @Html.ValidationMessageFor(model => model.Condition.Until)
                 </div>
             </div>
@@ -62,7 +62,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.IsBlocked, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.CheckBoxFor(model => model.Condition.IsBlocked)
+                    @Html.CheckBoxFor(model => model.Condition.IsBlocked, new { @class = "json_data" })
                     @Html.ValidationMessageFor(model => model.Condition.IsBlocked)
                 </div>
             </div>
@@ -70,7 +70,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.CheckBoxFor(model => model.Condition.HasRequiredFormat)
+                    @Html.CheckBoxFor(model => model.Condition.HasRequiredFormat, new { @class = "json_data" })
                     @Html.ValidationMessageFor(model => model.Condition.HasRequiredFormat)
                 </div>
             </div>
@@ -78,7 +78,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Condition.RequiredFormat)
+                    @Html.TextBoxFor(model => model.Condition.RequiredFormat, new { @class = "json_data" })
                     @Html.ValidationMessageFor(model => model.Condition.RequiredFormat)
                 </div>
             </div>
