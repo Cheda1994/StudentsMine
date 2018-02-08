@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
@@ -11,7 +12,8 @@ namespace StudentsMine.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public byte[] Data { get; set; }
-        private string DataBase64 { get; set; }
+        [NotMapped]
+        public string DataBase64 { get; set; }
         public string Format { get; set; }
 
         public static string FormatBase64(string base64) {

@@ -6,8 +6,22 @@
 <script src="/Scripts/duplicator.js"> </script>
 <script src="/Scripts/inputSerializer.js"> </script>
 <script>
+    var json;
+    $(document).ready(function () {
+        var counterInput = $('#counterListener')[0]
+        counterInput.onclick = function () {
+            console.log("sadasdas")
+            if (trigers.length-1 == attachmetsCounter) {
+                json = test();
+            }
+        }
+
+    })
+
     var data_field = new Duplicator("dublicate-data-group", "data-field", "formClick");
+    var attachmetsCounter = 0;
     function rebuildFiles() {
+        var counterInput = $('#counterListener')[0]
         var fileInputs = $('input[type=file]')
         fileInputs.each(function (index, node) {
             if (node.files[0] != undefined) {
@@ -20,6 +34,9 @@
                     name.value = node.files[0].name;
                     dataBase64.value = reader.result;
                     format.value = node.files[0].type;
+                    attachmetsCounter++;
+                    counterInput.value = attachmetsCounter;
+                    counterInput.click();
                 }
                 name.setAttribute('class',  'data');
                 dataBase64.setAttribute('class', 'data');
@@ -37,13 +54,10 @@
             }
         })
     }
-    var json;
+
     function sendAction() {
-        //rebuild();
-        //rebuildFiles();
-        $.when(rebuild(), rebuildFiles()).done(function () { 
-            json = test();
-        })
+        rebuild()
+        rebuildFiles()
     }
 
 </script>
@@ -127,3 +141,6 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+<input id="counterListener" hidden type="number">
+
+
