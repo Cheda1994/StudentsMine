@@ -45,15 +45,19 @@ namespace StudentsMine.Models
             this.Description = project.HomeWork.Description;
             this.Mark = project.Mark;
             this.HasCondition = project.HomeWork.HasCondition;
+            this.Attachments = new List<AttachmentView>();
             if (project.HomeWork.HasCondition)
             {
                 this.Condition = project.HomeWork.Condition;
             }
-            this.Attachments = project.HomeWork.Attachments;
+            foreach (var item in project.HomeWork.Attachments)
+            {
+                this.Attachments.Add(new AttachmentView(item));
+            }
         }
         public int Mark { get; set; }
         public Condition Condition { get; set; }
-        public ICollection<FileData> Attachments { get; set; }
+        public ICollection<AttachmentView> Attachments { get; set; }
     }
 
     public class UploadHomeWork

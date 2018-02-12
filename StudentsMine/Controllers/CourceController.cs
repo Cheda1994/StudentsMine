@@ -92,16 +92,40 @@ namespace StudentsMine.Controllers
         
         [Authorize(Roles = "Teacher")]
         [HttpPost]
-        public ActionResult AddHomeWork(HomeWork homeWork, int courseId)
+        public ContentResult AddHomeWork(HomeWork homeWork, int courseId)
         {
-            Course course = context.Courses.Find(courseId);
-            if (course.Teacher.ApplicationUser.Id == currentUserId)
+            RequestStatus result = new RequestStatus();
+            try
             {
-                homeWork.InitProjects(course);
-                context.Homeworks.Add(homeWork);
-                context.SaveChanges();
+                Course course = context.Courses.Find(courseId);
+                if (course.Teacher.ApplicationUser.Id == currentUserId)
+                {
+                    homeWork.InitProjects(course);
+                    if (homeWork.Attachments != null)
+                    {
+                        FileData.DataBase64ToDataByteArr(homeWork.Attachments);
+                        FileData.BuindGuid(homeWork.Attachments);
+                    }
+                    else
+                    {
+                        throw new NullReferenceException();
+                    }
+                    context.Homeworks.Add(homeWork);
+                    context.SaveChanges();
+                    result.Result = true;
+                    result.ErrorMessage = "No errors";
+                }
             }
-            return View();
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.ErrorMessage = ex.Message;
+            }
+            var json = new JavaScriptSerializer().Serialize(result);
+            return new ContentResult() { 
+                Content = json,
+                ContentType = "application/json"
+            };
         }
 
         public ActionResult HomeWorkIndex(int courseId) {
@@ -417,7 +441,7 @@ namespace StudentsMine.Controllers
         [HttpGet]
         public async Task<ContentResult> GetHWProject(int projectId)
         {
-            Project project = await context.Projects.FindAsync(projectId);
+            Project project = context.Projects.Include(p => p.HomeWork.Attachments).Where(p => p.Id == projectId).SingleOrDefault();
             if (project.Author.ApplicationUser.Id == currentUserId)
             {
                 HomeWorkPresentation homeWork = new HomeWorkPresentation(project);
@@ -455,6 +479,7 @@ namespace StudentsMine.Controllers
                 else
                 {
                     FileData file = new FileData();
+                    file.Guid = Guid.NewGuid();
                     file.Name = model.Name;
                     file.Format = model.Format;
                     byte[] formatedFile = Convert.FromBase64String(formatedString);
@@ -473,13 +498,145 @@ namespace StudentsMine.Controllers
                 ContentEncoding = Encoding.UTF8
             };
         }
+
+
+        public ContentResult GetHWAttachment(string fileId) {
+            FileData file = context.Files.Where(f => f.Guid.ToString() == fileId).SingleOrDefault();
+            string json;
+            if (file == null)
+            {
+                json = new JavaScriptSerializer().Serialize("EXCEPTION");
+            }
+            else
+            {
+                file.DataBase64 = Convert.ToBase64String(file.Data);
+                json = new JavaScriptSerializer().Serialize(file);
+            }
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json",
+                ContentEncoding = Encoding.UTF8
+            };
+        } 
         #endregion
 
 
 
+        public ActionResult ManageStudents(int courseId) {
+            ViewBag.CourseId = courseId;
+            return View();
+        }
+
         public PartialViewResult EditHomeWork()
         {
             return PartialView("~/Views/Cource/HomeWork/_EditHomeWork.cshtml");
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public ContentResult GetAllStudents(int courseId) {
+            List<Student> students = context.Courses.Find(courseId).Students.ToList();
+            if (students != null)
+            {
+                List<StudentShortView> studentViews = new List<StudentShortView>(); 
+                foreach (var student in students)
+                {
+                    studentViews.Add(new StudentShortView(student));
+                }
+                var json = new JavaScriptSerializer().Serialize(studentViews);
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json"
+                };
+            }
+            else
+            {
+                var result = new RequestStatus()
+                {
+                    ErrorMessage = "Have no find students",
+                    Result = false
+                };
+                var json = new JavaScriptSerializer().Serialize(result);
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json"
+                };
+            }
+            
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        public ContentResult GetAllOrders(int courseId) {
+            IQueryable<OrderToCourse> orders = context.OrdersToCourse.Where(x => x.Course.Id == courseId & x.Status == false);
+            if (orders != null)
+            {
+                List<StudentShortView> studentViews = new List<StudentShortView>(); 
+                foreach (var order in orders.ToList())
+                {
+                    studentViews.Add(new StudentShortView(order.Student));
+                }
+                var json = new JavaScriptSerializer().Serialize(studentViews);
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json"
+                };
+            }
+            return null;
+        }
+
+        [Authorize(Roles = "Student")]
+        [HttpGet]
+        public ContentResult OrdersToCource() 
+        {
+            List<OrderToCourse> orders = context.OrdersToCourse.Where(x => x.Student.ApplicationUser.Id == currentUserId & x.Status == false).ToList();
+            if (orders != null)
+            {
+                List<OrderToCourceStudentView> ordersView = new List<OrderToCourceStudentView>();
+                foreach (var order in orders)
+                {
+                    ordersView.Add(new OrderToCourceStudentView(order));
+                }
+                var json = new JavaScriptSerializer().Serialize(ordersView);
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json"
+                };
+            }
+            return null;
+        }
+
+        [HttpPost]
+        public ContentResult SuccessToOrder(int orderId)
+        {
+            OrderToCourse order = context.OrdersToCourse.Find(orderId);
+            RequestStatus status = new RequestStatus();
+            if (order != null)
+            {
+                order.Status = true;
+                order.Course.Students.Add(order.Student);
+                context.Entry(order).State = EntityState.Modified;
+                context.SaveChanges();
+                status.Result = true;
+                status.ErrorMessage = "No errors";
+
+            }
+            else
+            {
+                status.Result = false;
+                status.ErrorMessage = "Cannod find order";
+            }
+            var json = new JavaScriptSerializer().Serialize(status);
+            return new ContentResult()
+            {
+                Content=json,
+                ContentType="application/json"
+            };
         }
     }
 }

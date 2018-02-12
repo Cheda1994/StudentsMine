@@ -13,6 +13,7 @@
             console.log("sadasdas")
             if (trigers.length-1 == attachmetsCounter) {
                 json = test();
+                adddHomeWorck();
             }
         }
 
@@ -23,6 +24,10 @@
     function rebuildFiles() {
         var counterInput = $('#counterListener')[0]
         var fileInputs = $('input[type=file]')
+        if (fileInputs.length == 1) {
+            json = test();
+            adddHomeWorck();
+        }else{
         fileInputs.each(function (index, node) {
             if (node.files[0] != undefined) {
                 var name = document.createElement('input');
@@ -53,6 +58,19 @@
                 node.appendChild(format);
             }
         })
+        }
+    }
+
+    function adddHomeWorck() {
+        $.ajax({
+            url: "/Cource/AddHomeWork?courseId="+$('input[name=id]')[0].value,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ 'homeWork': json }),
+            success: function (data) {
+                console.log(data)
+            }
+        })
     }
 
     function sendAction() {
@@ -60,12 +78,20 @@
         rebuildFiles()
     }
 
+    function conditionStatusChange(condition) {
+        if (condition.checked == true) {
+            $("#condition").slideDown(300);
+        } else {
+            $("#condition").slideUp(300);
+        }
+    }
 </script>
 @using (Html.BeginForm("AddHomeWork", "Cource", new { courseId = ViewBag.CourceId }, FormMethod.Post, new { id = "form" }))
 {
     
-
     <div class="form-horizontal">
+        <input name="id" value="@ViewBag.CourceId" hidden />
+
         <h4>HomeWork</h4>
         <hr />
         @Html.ValidationSummary(true)
@@ -80,17 +106,42 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="text" class="data" name="Description" />
+                <textarea class="data" name="Description" ></textarea>
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.HasCondition, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="checkbox" class="data"  name="HasCondition" />
+                <input type="checkbox" onchange="conditionStatusChange(this)" class="data" name="HasCondition" />
             </div>
         </div>
 
+        <div id="condition">
+            
+            <div class="form-group">
+                <b class="control-label col-md-2">Until</b>
+                @*@Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })*@
+                <div class="col-md-10">
+                    <input type="date" class="data" name="Condition%Until" />
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="checkbox" class="data" name="Condition%HasRequiredFormat" disabled />
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input type="text" class="data" name="Condition%RequiredFormat" disabled />
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Attachments, new { @class = "control-label col-md-2" })
             <div class="col-md-10 dublicate-data-group" index="0">
@@ -99,40 +150,11 @@
         </div>
 
 
-        <div id="condition">
-            <h2>Condition</h2>
-            <div class="form-group">
-                @Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="text" class="data" name="Condition%Until" />
-                </div>
-            </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.Condition.IsBlocked, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="text" class="data" name="Condition%IsBlocked" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="checkbox" class="data" name="Condition%HasRequiredFormat" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="text" class="data" name="Condition%RequiredFormat" />
-                </div>
-            </div>
-        </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <a href="#" onclick="sendAction(); return false;" id="formClick">AAAAAAAAA</a>
-                <input type="submit" value="Create" class="btn btn-default" />
+                <a href="#" onclick="sendAction(); return false;" class="btn btn-default" id="formClick">Add home work</a>
+                @*<input type="submit" value="Create" class="btn btn-default" />*@
             </div>
         </div>
     </div>

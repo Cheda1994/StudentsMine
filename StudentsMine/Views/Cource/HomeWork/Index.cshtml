@@ -56,7 +56,7 @@
         })
     })
 
-
+    var hw;
     function feedHomeWorkPresentation(homeWork) {
         var selectedHomeWork = $("#selected-homework")[0];
         var hwTitleNode = $("#hwDescription")[0]
@@ -74,6 +74,26 @@
             var hwConditionIsBlocked = document.createElement("span");
             var hwConditionRequiredFormat = document.createElement("span");
         }
+        homeWork.Attachments.forEach(function (file) {
+            var fileNode = document.createElement('div');
+            var fileIcon = document.createElement('img');
+            var fileName = document.createElement('b');
+            if (file.Name.length > 10) {
+                fileName.textContent = file.Name.slice(0, 10) + '...';
+            } else {
+                fileName.textContent = file.Name;
+            }
+            fileNode.title = file.Name;
+            fileIcon.src = '/Content/themes/base/images/document-icon.png'
+            fileNode.onclick = function () {
+                downloadFile(file.Guid);
+            }
+            fileIcon.setAttribute('class', 'download-link-image');
+            fileNode.setAttribute('class', 'download-link')
+            fileNode.appendChild(fileIcon);
+            fileNode.appendChild(fileName);
+            hwAttachmentsNode.appendChild(fileNode);
+        })
         hwTitle.textContent = homeWork.Title;
         hwTitle.setAttribute("class", "home-work-area title");
         hwMark.textContent = homeWork.Mark;
@@ -122,6 +142,22 @@
             },
             error: function (error) {
                 alert(error)
+            }
+        })
+    }
+
+    function downloadFile(guid) {
+        $.ajax({
+            url: "/Cource/GetHWAttachment?fileId=" + guid,
+            type: "GET",
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data);
+                var hiddenElement = document.createElement('a');
+                hiddenElement.href = 'data:' + data.Format + ";base64,"+ data.DataBase64;
+                hiddenElement.target = '_blank';
+                hiddenElement.download = data.Name;
+                hiddenElement.click();
             }
         })
     }

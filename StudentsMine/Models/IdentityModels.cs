@@ -22,6 +22,7 @@ namespace StudentsMine.Models
         public DbSet<Student> Students { get; set; }
         public DbSet<OrderToCourse> OrdersToCourse { get; set; }
         public DbSet<Course> Courses { get; set; }
+        public DbSet<FileData> Files { get; set; }
         public DbSet<HomeWork> Homeworks { get; set; }
         public DbSet<Project> Projects { get; set; }
         public ApplicationDbContext()

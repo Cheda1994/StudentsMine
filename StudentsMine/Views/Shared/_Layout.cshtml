@@ -13,6 +13,10 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>  
     <link rel="stylesheet" href="/Content/css/amaran.min.css">
     <script src="/Scripts/jquery.amaran.js"></script>
+    <script src="/Scripts/inputSerializer.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.4.5/angular-route.js"></script>    
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -42,9 +46,38 @@
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
+    <div id="multypage" class="ordersList">
+        <div ng-app="orders" ng-controller="ordersCtrl">
 
-
+            <div ng-repeat="order in orders">
+                <h3>Cource name: {{order.Title}}</h3>
+            </div>
+        </div>
+    </div>
+    <script src="/Scripts/multypage.js"></script>
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        var ordersApp = angular.module('orders', []);
+        ordersApp.controller('ordersCtrl', function ($scope, $http) {
+            $http({
+                method: "GET",
+                url: "/Cource/OrdersToCource"
+            }).then(function (result) {
+                console.log(result);
+                $scope.orders = result.data
+            })
+
+            $scope.successOrder = function (id , item) {
+                $http({
+                    method: "POST",
+                    url: "/Cource/SuccessToOrder?orderId="+id
+                }).then(function (result) {
+                    var index = $scope.orders.indexOf(item);
+                    $scope.orders.splice(index, 1);
+                })
+            }
+        })
+    </script>
 </body>
 </html>

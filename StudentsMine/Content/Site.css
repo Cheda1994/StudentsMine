@@ -116,3 +116,97 @@ input[type="checkbox"].input-validation-error {
 .project-info {
     display:none;
 }
+
+.download-link{
+    display:inline-block;
+    transition:0.3s;
+    border-radius:10px;
+    margin:5px;
+    padding:10px;
+    text-align:center;
+    width: 100px;
+    cursor:pointer;
+}
+
+.download-link-image{
+    width: 30px;
+    cursor:pointer;
+}
+
+.download-link:hover{
+    transition:0.3s;
+    cursor:pointer;
+    background-color:#808080bd;
+}
+
+.student-presentation {
+position:relative;
+border-bottom: 1px solid red;
+text-align:center;
+background-color: #80808036;
+display:inline-block;
+width: 100px;
+margin:5px;
+height:100px;
+max-height:100px;
+}
+
+.student-presentation:hover{
+border-bottom: 0px;
+}
+
+.student-order{
+position:relative;
+border-bottom: 1px solid red;
+background-color: #80808036;
+margin:5px;
+padding:5px;
+max-height:100px;
+}
+
+
+
+#ordered-students , #active-students{
+height:450px;
+transition:0.3s;
+vertical-align:top;
+width:550px;
+display:inline-block;
+}
+
+#ordered-students:hover , #active-students:hover {
+transition:0.3s;
+background-color:#8080801c;
+}
+
+.show-data-button {
+    width:100%;
+    position:absolute;
+    background-color:red;
+    bottom:0;
+}
+
+#multypage{
+    position: absolute;
+    background-color: white;
+    width: 100px;
+    height: 100px;
+    z-index: 999999;
+    display:none;
+}
+
+#messagesIndic {
+    cursor:pointer;
+}
+
+.order-page{
+border-bottom: 1px solid red;
+padding: 5px;
+margin-bottom: 5px;
+}
+
+.order-button{
+    width: 30%;
+    display: inline-block;
+    text-align:center;
+}

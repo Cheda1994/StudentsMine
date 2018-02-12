@@ -150,6 +150,8 @@ namespace StudentsMine.Controllers
 
 
 
+
+
         #region Private Helpers
         private bool EmailAlreadyExists(CreateStudentView model) {
             int students = context.Students.Where(x => x.Email == model.Email).Count();

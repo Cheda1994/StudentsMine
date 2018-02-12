@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "ManageStudents";
+}
+
+<h2>ManageStudents</h2>
+<div ng-app="studentManage" ng-controller="studentsCtrl">
+    <div id="active-students">
+        <div ng-repeat="student in Students" class="student-presentation" >
+            <div ng-mouseover="showInfoButton($event)">
+                Name:
+                <br />
+                <div> {{ student.Name }}</div>
+                Email:
+                <br />
+                <div> {{ student.Email }}</div>
+                <div class="show-data-button" ng-hide="isHiden"><b>. . .</b></div>
+            </div>
+        </div>
+    </div>
+    <div id="ordered-students">
+        <div ng-repeat="student in orderedStudents" class="student-order">    
+            <div style="display:inline-block;">
+                <div>Name: {{ student.Name }}</div>
+                <div>Email: {{ student.Email }}</div>
+            </div>
+            <div class="btn btn-success" >ASDASDAS</div>
+        </div>
+    </div>
+</div>
+<script>
+    var app = angular.module('studentManage', []);
+    app.controller('studentsCtrl', function ($scope, $http) {
+        $http({
+            method: "GET",
+            url: "/Cource/GetAllStudents?courseId=" + @ViewBag.CourseId
+            }).then(function (result) {
+                console.log(result);
+                $scope.Students = result.data
+            })
+
+        $http({
+            method: "GET",
+            url: "/Cource/GetAllOrders?courseId=" + @ViewBag.CourseId
+        }).then(function (result) {
+            console.log(result);
+            $scope.orderedStudents = result.data
+        })
+        $scope.showInfoButton = function ($event) {
+            console.log($event);
+        }
+    })
+</script>

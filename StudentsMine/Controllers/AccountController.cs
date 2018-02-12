@@ -274,6 +274,7 @@ namespace StudentsMine.Controllers
             identity.AddClaims(new[] {
                 new Claim("CurrentRole",user.Role)
             });
+
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         }
 

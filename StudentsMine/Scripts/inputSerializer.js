@@ -15,7 +15,11 @@
                         if (a_v.length == 1) {
                             if (json[a_v[0]] == undefined) {
                                 if (elements.length == position + 1) {
-                                    json[a_v[0]] = inputs[index].value;
+                                    if (inputs[index].type == 'checkbox') {
+                                        json[a_v[0]] = inputs[index].checked;
+                                    }else{
+                                        json[a_v[0]] = inputs[index].value;
+                                    }
                                 } else {
                                     json[a_v[0]] = {};
                                 }
@@ -46,7 +50,11 @@
                     if (a_v.length == 1) {
                         if (parent[a_v[0]] == undefined) {
                             if (elements.length == position + 1) {
-                                parent[a_v[0]] = inputs[index].value;
+                                if (inputs[index].type == 'checkbox') {
+                                    parent[a_v[0]] = inputs[index].checked;
+                                }else{
+                                    parent[a_v[0]] = inputs[index].value;
+                                }
                             } else {
                                 parent[a_v[0]] = {};
                             }

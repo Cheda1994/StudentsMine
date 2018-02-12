@@ -263,6 +263,10 @@
     <Compile Include="Migrations\201801241615041_HW_Projects_Rel2.Designer.cs">
       <DependentUpon>201801241615041_HW_Projects_Rel2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802091337180_AddGuidToFile.cs" />
+    <Compile Include="Migrations\201802091337180_AddGuidToFile.Designer.cs">
+      <DependentUpon>201802091337180_AddGuidToFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Condition.cs" />
@@ -331,7 +335,6 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\createStudent.js" />
-    <Content Include="Scripts\duplic.js" />
     <Content Include="Scripts\duplicator.js" />
     <Content Include="Scripts\inputSerializer.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
@@ -345,6 +348,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\multypage.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -392,6 +396,8 @@
     <Content Include="Views\Cource\HomeWork\Index.cshtml" />
     <Content Include="Views\Cource\HomeWork\TeacherHWIndex.cshtml" />
     <Content Include="Views\Cource\HomeWork\_EditHomeWork.cshtml" />
+    <Content Include="Views\Cource\ManageStudents.cshtml" />
+    <Content Include="Views\Cource\OrdersToCource.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -477,6 +483,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801241615041_HW_Projects_Rel2.resx">
       <DependentUpon>201801241615041_HW_Projects_Rel2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802091337180_AddGuidToFile.resx">
+      <DependentUpon>201802091337180_AddGuidToFile.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

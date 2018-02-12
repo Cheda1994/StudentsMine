@@ -20,7 +20,18 @@ namespace StudentsMine.Models
         [Required]
         public virtual ApplicationUser ApplicationUser { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
+    }
 
+    public class StudentShortView {
+        public StudentShortView(Student student)
+        {
+            this.Id = student.Id;
+            this.Name = student.Name;
+            this.Email = student.Email;
+        }
 
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
     }
 }
