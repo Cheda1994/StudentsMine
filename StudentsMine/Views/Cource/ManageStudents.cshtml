@@ -4,7 +4,7 @@
 }
 
 <h2>ManageStudents</h2>
-<div ng-app="studentManage" ng-controller="studentsCtrl">
+<div ng-controller="studentsCtrl">
     <div id="active-students">
         <div ng-repeat="student in Students" class="student-presentation" >
             <div ng-mouseover="showInfoButton($event)">
@@ -29,13 +29,12 @@
     </div>
 </div>
 <script>
-    var app = angular.module('studentManage', []);
     app.controller('studentsCtrl', function ($scope, $http) {
         $http({
             method: "GET",
             url: "/Cource/GetAllStudents?courseId=" + @ViewBag.CourseId
             }).then(function (result) {
-                console.log(result);
+
                 $scope.Students = result.data
             })
 
@@ -43,7 +42,6 @@
             method: "GET",
             url: "/Cource/GetAllOrders?courseId=" + @ViewBag.CourseId
         }).then(function (result) {
-            console.log(result);
             $scope.orderedStudents = result.data
         })
         $scope.showInfoButton = function ($event) {

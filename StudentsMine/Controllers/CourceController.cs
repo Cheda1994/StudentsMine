@@ -638,5 +638,28 @@ namespace StudentsMine.Controllers
                 ContentType="application/json"
             };
         }
+
+        [HttpPost]
+        public ContentResult RejectOrderToCourse(int orderId)
+        {
+            OrderToCourse order = context.OrdersToCourse.Find(orderId);
+            RequestStatus status = new RequestStatus();
+            if (order != null)
+            {
+                context.OrdersToCourse.Remove(order);
+                context.SaveChanges();
+            }
+            else
+            {
+                status.Result = false;
+                status.ErrorMessage = "Cannod find order";
+            }
+            var json = new JavaScriptSerializer().Serialize(status);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json"
+            };
+        }
     }
 }

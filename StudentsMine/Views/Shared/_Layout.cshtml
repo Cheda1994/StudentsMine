@@ -1,5 +1,4 @@
-﻿<!DOCTYPE html>
-<html>
+﻿7<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,68 +15,76 @@
     <script src="/Scripts/inputSerializer.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.4.5/angular-route.js"></script>    
-
+    <script>
+        var app = angular.module('studentsMine', []);=][]
+    </script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", null, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-    <div id="multypage" class="ordersList">
-        <div ng-app="orders" ng-controller="ordersCtrl">
-
-            <div ng-repeat="order in orders">
-                <h3>Cource name: {{order.Title}}</h3>
+    <div ng-app="studentsMine">
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Application name", "Index", "Home", null, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li>@Html.ActionLink("About", "About", "Home")</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
             </div>
         </div>
-    </div>
-    <script src="/Scripts/multypage.js"></script>
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-    <script>
-        var ordersApp = angular.module('orders', []);
-        ordersApp.controller('ordersCtrl', function ($scope, $http) {
-            $http({
-                method: "GET",
-                url: "/Cource/OrdersToCource"
-            }).then(function (result) {
-                console.log(result);
-                $scope.orders = result.data
-            })
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>
+        </div>
+        <script src="/Scripts/multypage.js"></script>
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
+        <script>
 
-            $scope.successOrder = function (id , item) {
+            app.controller('ordersCtrl', function ($scope, $http) {
                 $http({
-                    method: "POST",
-                    url: "/Cource/SuccessToOrder?orderId="+id
+                    method: "GET",
+                    url: "/Cource/OrdersToCource"
                 }).then(function (result) {
-                    var index = $scope.orders.indexOf(item);
-                    $scope.orders.splice(index, 1);
+
+                    $scope.orders = result.data
                 })
-            }
-        })
-    </script>
+
+                $scope.successOrder = function (id, item, eventCaller) {
+                    $http({
+                        method: "POST",
+                        url: "/Cource/SuccessToOrder?orderId=" + id
+                    }).then(function (result) {
+                        var index = $scope.orders.indexOf(item);
+                        console.log(item);
+                        $scope.orders.splice(index, 1);
+                    })
+                }
+
+                $scope.rejectOrder = function (id, item, eventCaller) {
+                    $http({
+                        method: "POST",
+                        url: "/Cource/RejectOrderToCourse?orderId=" + id
+                    }).then(function (result) {
+                        var index = $scope.orders.indexOf(item);
+                        console.log(item);
+                        $scope.orders.splice(index, 1);
+                    })
+                }
+            })
+        </script>
+    </div>
 </body>
 </html>

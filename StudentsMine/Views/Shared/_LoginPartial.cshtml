@@ -17,24 +17,27 @@
             </li>
             
         }
-        
+
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>
     }
-        <div id="multypage" class="ordersList">
-        <div ng-app="orders" ng-controller="ordersCtrl">
+            <div id="multypage" class="ordersList">
+            <div ng-app="openOrdersApp" ng-controller="ordersCtrl">
 
-            <div ng-repeat="order in orders" class="order-page">
-                <div>Cource name: {{order.Title}}</div>
-                <div>Description: {{order.Description}}</div>
-                <div>Teacher name: {{order.TeacherName}}</div>
-                <div style="text-align:center">
-                    <div class="order-button btn btn-success" ng-click="successOrder(order.Id , order)">Success</div>
-                    <div class="order-button btn btn-danger" >Denay</div>
+                <div ng-repeat="order in orders track by $index" class="order-page">
+                    <div class="orders-list-content">
+                        <div style="margin:2px">Cource name: {{order.Title}}</div>
+                        <div style="margin:2px">Description: {{order.Description}}</div>
+                        <div style="margin:2px">Teacher name: {{order.TeacherName}}</div>
+                    </div>
+                    <div class="orders-list-buttons" style="text-align:center">
+                        <div class="order-button btn btn-success" ng-click="successOrder(order.Id)">Success</div>
+                        <div class="order-button btn btn-danger" ng-click="rejectOrder(order.Id )">Reject</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
 }
 else
 {
