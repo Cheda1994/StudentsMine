@@ -12,15 +12,18 @@ using System.Web.Script.Serialization;
 using System.Text;
 using System.Data.Entity;
 using System.Security.Claims;
+using StudentsMine.App_Start;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
 
 namespace StudentsMine.Controllers
 {
+
     //TODO : Add exceptions!!!!
     [Authorize]
     public class CourceController : Controller
     {
-        private ApplicationDbContext context = new ApplicationDbContext();
-
+        public ApplicationDbContext context = new ApplicationDbContext();
         private string currentUserId { 
             get {
                 return User.Identity.GetUserId(); }
@@ -36,6 +39,24 @@ namespace StudentsMine.Controllers
         }
         //
         // GET: /Cource/
+        [StudentAccess("CanDownloadFiles")]
+        public ContentResult ProjectsHubFiles(int courseId)
+        {
+            List<AttachmentView> files = context.Database.SqlQuery<AttachmentView>("SELECT * FRoM HUB_PROJECTS WHERE Course_Id = " + courseId).ToList();
+            var json = new JavaScriptSerializer().Serialize(files);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json"
+            };
+        }
+
+
+        public ActionResult ProjectsHub(int courseId)
+        {
+            ViewBag.CourseId = courseId;
+            return View();
+        }
         public ActionResult Index()
         {
             var currentUser = (ApplicationUser)context.Users.Find(currentUserId);
@@ -53,10 +74,10 @@ namespace StudentsMine.Controllers
             }
             return View(courses);
         }
-
-        public ActionResult Course(int id) {
-            Course course = context.Courses.Find(id);
-            ViewBag.CourseId = id;
+        
+        public ActionResult Course(int courseId) {
+            Course course = context.Courses.Find(courseId);
+            ViewBag.CourseId = courseId;
             return View(course);
         }
 
@@ -71,6 +92,8 @@ namespace StudentsMine.Controllers
         {
             Teacher user = context.Teachers.SingleOrDefault(x => x.ApplicationUser.Id == currentUserId);
             course.Teacher = user;
+            //StudentAccessProp accessProp = new StudentAccessProp();
+            //course.BaseAccessProps = accessProp;
             context.Courses.Add(course);
             context.SaveChanges();
             return View();
@@ -106,10 +129,6 @@ namespace StudentsMine.Controllers
                         FileData.DataBase64ToDataByteArr(homeWork.Attachments);
                         FileData.BuindGuid(homeWork.Attachments);
                     }
-                    else
-                    {
-                        throw new NullReferenceException();
-                    }
                     context.Homeworks.Add(homeWork);
                     context.SaveChanges();
                     result.Result = true;
@@ -129,6 +148,7 @@ namespace StudentsMine.Controllers
         }
 
         public ActionResult HomeWorkIndex(int courseId) {
+            ViewBag.CourseId = courseId;
             switch (currentUserRole)
             {
                 case "Teacher":
@@ -201,6 +221,10 @@ namespace StudentsMine.Controllers
             }
         }
 
+
+
+        [Authorize(Roles = "Student")]
+        [StudentAccess("AccessToHomeWork")]
         private ActionResult StudentHomeWorkIndex(int courseId)
         {
             List<Project> projects = context.Projects.Where(p => p.IsHomeWork == true && p.HomeWork.Course.Id == courseId && p.Author.ApplicationUser.Id == currentUserId).ToList();
@@ -439,6 +463,8 @@ namespace StudentsMine.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Student")]
+        [StudentAccess("AccessToHomeWork")]
         public async Task<ContentResult> GetHWProject(int projectId)
         {
             Project project = context.Projects.Include(p => p.HomeWork.Attachments).Where(p => p.Id == projectId).SingleOrDefault();
@@ -465,6 +491,8 @@ namespace StudentsMine.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Student")]
+        [StudentAccess("AccessToHomeWork")]
         public async Task<ActionResult> UploadHomeWork(UploadHomeWork model)
         {
             Project project = await context.Projects.FindAsync(model.ProjectId);
@@ -500,9 +528,11 @@ namespace StudentsMine.Controllers
         }
 
 
+        [StudentAccess("AccessToHomeWork")]
         public ContentResult GetHWAttachment(string fileId) {
             FileData file = context.Files.Where(f => f.Guid.ToString() == fileId).SingleOrDefault();
             string json;
+            var serializer = new JavaScriptSerializer();
             if (file == null)
             {
                 json = new JavaScriptSerializer().Serialize("EXCEPTION");
@@ -510,7 +540,8 @@ namespace StudentsMine.Controllers
             else
             {
                 file.DataBase64 = Convert.ToBase64String(file.Data);
-                json = new JavaScriptSerializer().Serialize(file);
+                serializer.MaxJsonLength = Int32.MaxValue;
+                json = serializer.Serialize(file);
             }
             return new ContentResult()
             {
@@ -589,7 +620,6 @@ namespace StudentsMine.Controllers
             return null;
         }
 
-        [Authorize(Roles = "Student")]
         [HttpGet]
         public ContentResult OrdersToCource() 
         {
@@ -620,6 +650,9 @@ namespace StudentsMine.Controllers
             {
                 order.Status = true;
                 order.Course.Students.Add(order.Student);
+                var baseOrder = order.Course.BaseAccessProps.MakeClone();
+                baseOrder.Student = order.Student;
+                order.Course.StudentAccessProps.Add(baseOrder);
                 context.Entry(order).State = EntityState.Modified;
                 context.SaveChanges();
                 status.Result = true;
@@ -655,11 +688,84 @@ namespace StudentsMine.Controllers
                 status.ErrorMessage = "Cannod find order";
             }
             var json = new JavaScriptSerializer().Serialize(status);
+            return new ContentResult() 
+            {
+                Content = json,
+                ContentType = "application/json"
+            };
+        }
+
+        [Authorize(Roles="Teacher")]
+        public ContentResult GetAccessToCourse(int courseId , int studentId)
+        {
+            StudentAccessProp sap = context.StudentAccessProps.Where(x => courseId == x.Course.Id && studentId == x.Student.Id).SingleOrDefault();
+            Dictionary<string, bool> result = new Dictionary<string, bool>();
+            result.Add("AccessToCourse", sap.AccessToCourse);
+            result.Add("CanUploadFiles", sap.CanUploadFiles);
+            result.Add("CanDownloadFiles", sap.CanDownloadFiles);
+            result.Add("AccessToHomeWork", sap.AccessToHomeWork);
+            var json = new JavaScriptSerializer().Serialize(result);
+            return new ContentResult(){
+                Content = json,
+                ContentType = "application/json"
+            };
+        }
+
+        public ContentResult ChangeAccessToCourse(int courseId, int studentId , StudentAccessPropView access)
+        {
+            try
+            {
+                StudentAccessProp sap = context.StudentAccessProps.Where(x => courseId == x.Course.Id && studentId == x.Student.Id).SingleOrDefault();
+                sap.UpdateByView(access);
+                context.Entry(sap).State = EntityState.Modified;
+                context.SaveChanges();
+                RequestStatus request = new RequestStatus();
+                request.ErrorMessage = "No errors";
+                request.Result = true;
+                var json = new JavaScriptSerializer().Serialize(request);
+                return new ContentResult() 
+                { 
+                    Content = json,
+                    ContentType = "application/json"
+                };
+            }
+            catch (Exception ex)
+            {
+                RequestStatus request = new RequestStatus();
+                request.ErrorMessage = ex.Message;
+                request.Result = false;
+                var json = new JavaScriptSerializer().Serialize(request);
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json"
+                };
+            }
+        }
+
+        [Authorize(Roles = "Teacher")]
+        public ContentResult RememberAboutHW(int homeWorkId) {
+            RequestStatus status = new RequestStatus();
+            try
+            {
+                var homeWork = context.Homeworks.Find(homeWorkId);
+                homeWork.SendRemember();
+                status.Result = true;
+                status.ErrorMessage = "No Errors";
+
+            }
+            catch (Exception ex)
+            {
+                status.Result = false;
+                status.ErrorMessage = ex.Message;
+            }
+            var json = new JavaScriptSerializer().Serialize(status);
             return new ContentResult()
             {
                 Content = json,
                 ContentType = "application/json"
             };
         }
+
     }
 }

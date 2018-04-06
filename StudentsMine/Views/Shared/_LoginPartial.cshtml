@@ -1,48 +1,178 @@
 ﻿@using Microsoft.AspNet.Identity
+<style>
+    .side-user-image {
+        width: 75px;
+        display: inline-block;
+    }
+    .user-sb-block {
+        height: 75px;
+        background-color: #313131;
+    }
+    .user-name-block {
+        display: inline-block;
+        top: 50%;
+        transform: translateY(-50%);
+        position: relative;
+    }
+    .sb-block {
+        height: 75px;
+        cursor:pointer;
+    }
+    .sb-block {
+        height: 75px;
+        color:#f1f0f0;
+    }
+    .sb-name-block {
+        width: 50px;
+        display: inline-block;
+    }
+    .side-image {
+        width: 50px;
+        height: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        position: relative;
+    }
 
-@if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-    @Html.AntiForgeryToken()
+    .log-out-block {
+        transition: 1s;
+        background-color: #9ace5b66;
+    }
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
-        </li>
-        @if (User.IsInRole("Student"))
-        {
-            <li>
-                <img onclick="messageClick()" id="messagesIndic" alt="messages" src="/Content/themes/base/images/Dialog-box-Discussion-box.png" width="50" />
-            </li>
-            
+    .messages-block {
+        transition: 1s;
+        background-color: #178de766;
+    }
+
+    .home-work-block {
+        transition: 1s;
+        background-color: #efc84a66;
+    }
+
+    .projects-hub-block {
+        transition: 1s;
+        background-color: #d900ff66;
+    }
+
+    .allcourses-block {
+        transition: 1s;
+        background-color: #cb3d2866;
+    }
+
+    .log-out-block:hover {
+        transition:1s;
+        background-color: #9ace5b;
+    }
+    .messages-block:hover {
+        transition: 1s;
+        background-color: #178de7;
+    }
+    .home-work-block:hover {
+        transition: 1s;
+        background-color: #efc84a;
+    }
+    .projects-hub-block:hover {
+        transition: 1s;
+        background-color: #d900ff;
+    }
+    .allcourses-block:hover {
+        transition: 1s;
+        background-color: #cb3d28;
+    }
+    .messages{
+        display:none;
+        height:300px;
+        background-color:#f1f0f0;
+    }
+    .messages-count{
+        position:absolute;
+        margin-left:10px;
+        margin-top:10px;
+        z-index:10000;
+    }
+</style>
+<script>
+    var isOpen = false;
+    var messagesOpen = false;
+    $(document).ready(function () {
+        $(".messages-block")[0].onclick = function () {
+            messagesOpen = !messagesOpen;
+            $($(".messages")[0]).toggle(500);
+        }
+        var navLog = $(".nav-login")[0];
+        navLog.onmouseleave = function () {
+            if (messagesOpen) {
+                messagesOpen = !messagesOpen;
+                $($(".messages")[0]).toggle(500);
+            }
         }
 
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-    </ul>
-    }
-            <div id="multypage" class="ordersList">
-            <div ng-app="openOrdersApp" ng-controller="ordersCtrl">
 
-                <div ng-repeat="order in orders track by $index" class="order-page">
-                    <div class="orders-list-content">
-                        <div style="margin:2px">Cource name: {{order.Title}}</div>
-                        <div style="margin:2px">Description: {{order.Description}}</div>
-                        <div style="margin:2px">Teacher name: {{order.TeacherName}}</div>
-                    </div>
-                    <div class="orders-list-buttons" style="text-align:center">
-                        <div class="order-button btn btn-success" ng-click="successOrder(order.Id)">Success</div>
-                        <div class="order-button btn btn-danger" ng-click="rejectOrder(order.Id )">Reject</div>
-                    </div>
+        //var navLog = $(".nav-login")[0];
+        //var icons = $(".side-image");
+        //var windowWidth = window.screen.width;
+        //var navBarWidth = (windowWidth / 100) * 15;
+        //var iconWidth = (windowWidth / 100) * 5;
+        //navLog.style.width = navBarWidth;
+        //icons[0].style.width = iconWidth;
+    })
+    function sideBarButton(url) {
+        window.open(url, "_self");
+    }
+</script>
+<div class="nav-login">
+    <div class="user-sb-block">
+        <div class="user-name-block">
+            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </div>
+        <div style="float:right;">
+            <img class="side-user-image" src="/Content/themes/base/images/userIcon.png" />
+        </div>
+    </div>
+    <div class="sb-block log-out-block" onclick="sideBarButton('/Account/LogOff')">
+        <div class="sb-name-block user-name-block">
+            Log off
+        </div>
+        <div style="float: right; width: 75px; height: 75px;">
+            <img class="side-image" src="/Content/themes/base/images/logOutIcon.png" />
+        </div>
+    </div>
+
+    <div class="sb-block messages-block" >
+        <div class="sb-name-block user-name-block">
+            Messages
+        </div>
+        <div style="float: right; width: 75px; height: 75px;">
+            <div class="messages-count" ng-controller="ordersCtrl">
+                 <span class="badge badge-primary" ng-bind="orders.length"></span>
+            </div>
+            <img class="side-image" src="/Content/themes/base/images/messageIcon.png" />
+        </div>
+    </div>
+    <div class="messages">
+        <div style="height:300px;overflow:auto;" ng-controller="ordersCtrl">
+            <div ng-repeat="order in orders track by $index" class="order-page">
+                <div class="orders-list-content">
+                    <div style="margin:2px">Cource name: {{order.Title}}</div>
+                    <div style="margin:2px">Description: {{order.Description}}</div>
+                    <div style="margin:2px">Teacher name: {{order.TeacherName}}</div>
+                </div>
+                <div class="orders-list-buttons" style="text-align:center">
+                    <div class="order-button btn btn-success" ng-click="successOrder(order.Id)">Success</div>
+                    <div class="order-button btn btn-danger" ng-click="rejectOrder(order.Id )">Reject</div>
                 </div>
             </div>
         </div>
+    </div>
 
-}
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
-}
+
+    <div class="sb-block allcourses-block" onclick="sideBarButton('/Cource')">
+        <div class="sb-name-block user-name-block">
+            All Courses
+        </div>
+        <div style="float: right; width: 75px; height: 75px;">
+            <img class="side-image" src="/Content/themes/base/images/AllCourses.png" />
+        </div>
+    </div>
+
+</div>

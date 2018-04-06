@@ -2,6 +2,97 @@
 @{
     ViewBag.Title = "TeacherHWIndex";
 }
+<script src="/Scripts/duplicator.js"> </script>
+<script src="/Scripts/inputSerializer.js"> </script>
+<script>
+    var json;
+    $(document).ready(function () {
+        var counterInput = $('#counterListener')[0]
+        counterInput.onclick = function () {
+            if (trigers.length - 1 == attachmetsCounter) {
+                json = test();
+                adddHomeWorck();
+            }
+        }
+
+        var checkBoxLabels = $(".checkBoxLabel")
+        checkBoxLabels.each(function (index, node) {
+            node.onchange = function () {
+                currentValue = this.innerText;
+                this.innerText = "Yes" == currentValue ? "No" : "Yes"
+            }
+        })
+
+    })
+
+    var data_field = new Duplicator("dublicate-data-group", "data-field", "formClick");
+    var attachmetsCounter = 0;
+    function rebuildFiles() {
+        var counterInput = $('#counterListener')[0]
+        var fileInputs = $('input[type=file]')
+        if (fileInputs.length == 1) {
+            json = test();
+            adddHomeWorck();
+        } else {
+            fileInputs.each(function (index, node) {
+                if (node.files[0] != undefined) {
+                    var name = document.createElement('input');
+                    var dataBase64 = document.createElement('input');
+                    var format = document.createElement('input');
+                    var reader = new FileReader();
+                    reader.readAsDataURL(node.files[0])
+                    reader.onload = function () {
+                        name.value = node.files[0].name;
+                        dataBase64.value = reader.result;
+                        format.value = node.files[0].type;
+                        attachmetsCounter++;
+                        counterInput.value = attachmetsCounter;
+                        counterInput.click();
+                    }
+                    name.setAttribute('class', 'data');
+                    dataBase64.setAttribute('class', 'data');
+                    format.setAttribute('class', 'data');
+
+                    name.setAttribute('name', node.name + '%Name');
+                    dataBase64.setAttribute('name', node.name + '%DataBase64');
+                    format.setAttribute('name', node.name + '%Format');
+                    name.hidden = true;
+                    dataBase64.hidden = true;
+                    format.hidden = true;
+                    node.appendChild(name);
+                    node.appendChild(dataBase64);
+                    node.appendChild(format);
+                }
+            })
+        }
+    }
+
+    function adddHomeWorck() {
+        $.ajax({
+            url: "/Cource/AddHomeWork?courseId=@ViewBag.CourseId",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ 'homeWork': json }),
+            success: function (data) {
+                toastr.success('Was successfuly added')
+            }
+        })
+    }
+
+    function sendAction() {
+        rebuild()
+        rebuildFiles()
+    }
+
+    function conditionStatusChange(condition) {
+        if (condition.checked == true) {
+            $("#condition").slideDown(300);
+        } else {
+            $("#condition").slideUp(300);
+        }
+    }
+</script>
+
 <script>
     function getHomeWorkProjects(id) {
         $.ajax({
@@ -12,197 +103,340 @@
                 $("#home-work-prop-holder").fadeOut(100)
                 var body = $("#selected-homework")[0];
                 body.innerHTML = ""
-                projects.Projects.forEach(function (project , index) {
+                projects.Projects.forEach(function (project, index) {
                     feedHWProject(project)
                 })
             }
         })
     }
+    var x;
+    function feedHWProject(project) {
 
-    function feedHWProject(project)
-    {
         var body = $("#selected-homework")[0];
         var projectRow = document.createElement("div")
         var projectInfo = document.createElement("div")
-        var downloadProjectLink = document.createElement("a")
-        downloadProjectLink.onclick = function () {
-            DownloadFiel(project.ProjectId)
+        console.log(project.IsUploaded);
+        var vxIcon = document.createElement("img")
+        vxIcon.setAttribute("style", "width:20px;padding: 3px;height: 20px;")
+        if (project.IsUploaded) {
+            vxIcon.src = "/Content/themes/base/images/V.png"
+            var downloadProjectLink = document.createElement("img")
+            downloadProjectLink.onclick = function () {
+                DownloadFiel(project)
+            }
+            downloadProjectLink.src = "/Content/themes/base/images/download-icon.png";
+            downloadProjectLink.setAttribute("class", "toggle-button")
+            projectRow.appendChild(downloadProjectLink);
+        } else {
+            vxIcon.src = "/Content/themes/base/images/X.png"
         }
-        downloadProjectLink.text = "Download";
-        projectInfo.appendChild(downloadProjectLink);
         var studentName = document.createElement("span")
         var projectMark = document.createElement("span")
         var projectWasUploaded = document.createElement("span")
         var inputMark = document.createElement("input")
-        var toggleButton = document.createElement("span")
+        var toggleButton = document.createElement("img")
+        var nameAndMark = document.createElement('div');
+        nameAndMark.setAttribute("class", "nameAndMark");
         inputMark.type = "number"
-        inputMark.setAttribute("id" , "mark_"+project.ProjectId)
+        inputMark.setAttribute("id", "mark_" + project.ProjectId)
         projectInfo.appendChild(inputMark);
         var buttonChangeMark = document.createElement("a");
         buttonChangeMark.text = "Change mark"
         buttonChangeMark.onclick = function () {
-            changeMark(project.ProjectId) 
+            changeMark(project.ProjectId)
         }
         var buttonBlockThisProject = document.createElement("a");
         buttonChangeMark.onclick = function () {
-            changeMark(project.ProjectId) 
+            changeMark(project.ProjectId)
         }
         projectInfo.appendChild(buttonChangeMark);
-        projectInfo.setAttribute("class" , "project-info");
-        projectInfo.setAttribute("id" , "project-info_"+project.ProjectId);
+        projectInfo.setAttribute("class", "project-info");
+        projectInfo.setAttribute("id", "project-info_" + project.ProjectId);
         studentName.textContent = project.StudentName;
         projectMark.textContent = project.CurrentMark;
-        toggleButton.textContent = "Open"
-        toggleButton.onclick = function(){
+        toggleButton.src = '/Content/themes/base/images/three-dots.png'
+        toggleButton.setAttribute('class', 'toggle-button')
+        toggleButton.onclick = function () {
             OpenProjectInfo(project.ProjectId)
         }
-        projectRow.setAttribute("class" , "project-row");
-        projectRow.appendChild(studentName);
-        projectRow.appendChild(projectMark);
+        projectRow.setAttribute("class", "project-row");
+        projectRow.appendChild(vxIcon);
+        nameAndMark.appendChild(studentName);
+        projectMark.setAttribute("style", "float:right;")
+        nameAndMark.appendChild(projectMark)
+        projectRow.appendChild(nameAndMark);
         projectRow.appendChild(toggleButton);
+
+
         projectRow.appendChild(projectInfo);
         body.appendChild(projectRow);
     }
 
-    function OpenProjectInfo(id){
-        $("#project-info_"+id).toggle(400);
+    function OpenProjectInfo(id) {
+        $("#project-info_" + id).toggle(400);
     }
 
+
     function DownloadFiel(projectId) {
+
         $.ajax({
-            url:"/Cource/GetFile?projectId="+projectId,
-            type:"GET",
-            success:function(file){
+            url: "/Cource/GetFile?projectId=" + projectId.ProjectId,
+            type: "GET",
+            success: function (file) {
                 var hiddenElement = document.createElement('a');
                 hiddenElement.href = file;
                 hiddenElement.target = '_blank';
-                hiddenElement.download = 'download';
+                hiddenElement.download = projectId.ProjectId + '_' + projectId.StudentName;
                 hiddenElement.click();
 
             }
         })
     }
 
-    function blockHomeWork(id , caller) {
+    function blockHomeWork(id, caller) {
         console.log(caller)
         $.ajax({
-            url:"/Cource/BlockHomeWork?homeworkId="+id,
+            url: "/Cource/BlockHomeWork?homeworkId=" + id,
             type: "POST",
             contentType: "application/json",
-            success: function(data){
-                $.amaran({
-                    'message': 'Was succesfuly ' + caller.innerText +'ed',
-                    'position': 'bottom',
-                    'outEffect': 'slideLeft'
-                });
+            success: function (data) {
+                toastr.info('Was succesfuly ' + caller.innerText + 'ed')
+                //$.amaran({
+                //    'message': 'Was succesfuly ' + caller.innerText +'ed',
+                //    'position': 'bottom',
+                //    'outEffect': 'slideLeft'
+                //});
             }
         })
-    
+
     }
 
-    function removeHomeWork(homeworkId , node){
+    function removeHomeWork(homeworkId, node) {
         $.ajax({
-            url:"/Cource/RemoveHW?homeworkId="+homeworkId,
-            type:"GET",
+            url: "/Cource/RemoveHW?homeworkId=" + homeworkId,
+            type: "GET",
             contentType: "application/json",
-            success:function(result){
+            success: function (result) {
                 if (result.Result) {
                     $(this).fadeOut(500);
-
-                }else{
-                    $.amaran({
-                        'message': result.ErrorMessage ,
-                        'position': 'bottom',
-                        'outEffect': 'slideLeft'
-                    });
+                    toastr.success('Was succesfuly removed');
+                } else {
+                    toastr.error(result.ErrorMessage);
                 }
 
             }
         })
     }
 
-    function changeMark(projectId){
-        var mark = parseInt($("#mark_"+projectId).val());
+    function rememberAboutHW(homeworkId){
+        $.ajax({
+            url: "/Cource/RememberAboutHW?homeWorkId=" + homeworkId,
+            type: "GET",
+            contentType: "application/json",
+            success: function (result) {
+                if (result.Result) {
+                    toastr.success('Mark was changed');
+                }
+                else {
+                    toastr.error(result.ErrorMessage);
+                }
+            }
+        })
+    }
+
+    function changeMark(projectId) {
+        var mark = parseInt($("#mark_" + projectId).val());
         console.log(mark == null);
         if (isNaN(mark)) {
-            $.amaran({
-                'message': 'Mark field have to hold',
-                'position': 'bottom',
-                'outEffect': 'slideLeft'
-            });
-        }else{
+            toastr.error('Mark field have to hold');
+        } else {
             $.ajax({
-                url:"/Cource/ChangeMark?projectId="+projectId+"&mark="+mark,
-                type:"GET",
+                url: "/Cource/ChangeMark?projectId=" + projectId + "&mark=" + mark,
+                type: "GET",
                 contentType: "application/json",
-                success:function(file){
+                success: function (file) {
                     if (file.Result) {
-                        $.amaran({
-                            'message': 'Mark was changed',
-                            'position': 'bottom',
-                            'outEffect': 'slideLeft'
-                        });
+                        toastr.success('Mark was changed');
                     }
                     else {
-                        $.amaran({
-                            'message': file.ErrorMessage,
-                            'position': 'bottom',
-                            'outEffect': 'slideLeft'
-                        });
+                        toastr.error(file.ErrorMessage);
                     }
                 }
             })
         }
     }
 </script>
-<div id="home-work-list">
-    <table>
-        <thead>
-            <tr>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Description
-                </th>
-                <th>
-                    Date
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="homework-data-row" onclick="getHomeWorkProjects(@item.Id)">
-                <td>@item.Title</td>
-                <td>@item.Description</td>
-                <td>@item.Create</td>
-                <td>Edit</td>
-                <td onclick="removeHomeWork(@item.Id , this )">Remove</td>
-                @if (@item.Condition != null)
-                {
-                    if (@item.Condition.IsBlocked)
-                    {
-                        <td onclick="blockHomeWork(@item.Id , this)"> UnBlock</td>
-                    }                
-                    else
-                    {
-                        <td onclick="blockHomeWork(@item.Id , this)"> Block</td>
-                    }
-                }
-                else
-                {
-                    <td onclick="blockHomeWork(@item.Id , this)"> Block</td>
-                }
-            </tr>
-        }
-        </tbody>
-    </table>
+<div id="home-work-page">
+    <div class="home-work-options">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+            Add Home Work
+        </button>
 
-</div>
-<div id="selected-homework">
-    <div id="home-work-prop-holder">
-        Selected home work
+    </div>
+    <div class="home-work">
+        <div id="home-work-list">
+            <table style="width: 600px;">
+                <thead>
+                    <tr>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="homework-data-row" onclick="getHomeWorkProjects(@item.Id)">
+                            <td>@item.Title</td>
+                            @if (item.Description != null)
+                            {
+                                if (item.Description.Length > 15)
+                                {
+                                    <td>@item.Description.Substring(0, 10)...</td>
+                                }
+                                else
+                                {
+                                    <td>@item.Description</td>
+                                }
+                            }
+                            else
+                            {
+                                <td>@item.Description</td>
+                            }
+                            <td>@item.Create</td>
+                            <td class="btn btn-danger table-btn" onclick="removeHomeWork(@item.Id , this )">Remove</td>
+                            @if (@item.Condition != null)
+                            {
+                                if (@item.Condition.IsBlocked)
+                                {
+                                    <td class="btn btn-outline-warning table-btn" onclick="blockHomeWork(@item.Id , this)"> UnBlock</td>
+                                }
+                                else
+                                {
+                                    <td class="btn btn-warning table-btn" onclick="blockHomeWork(@item.Id , this)"> Block</td>
+                                }
+                            }
+                            else
+                            {
+                                <td class="btn btn-info table-btn" onclick="blockHomeWork(@item.Id , this)"> Block</td>
+                            }
+                            <td class="btn btn-success table-btn" onclick="rememberAboutHW(@item.Id)">Remember</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div id="selected-homework">
+            <div id="home-work-prop-holder">
+                Selected home work
+            </div>
+        </div>
     </div>
 </div>
-<iframe id="fileFrame" src="" hidden></iframe>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add home work</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-horizontal">
+                    <div class="add-home-work">
+                        <input name="id" value="@ViewBag.CourceId" hidden />
+                        <div style="display:inline-block;">
+                            <div class="form-group">
+                                <h4>Title</h4>
+                                <br />
+                                <div class="col-md-10">
+                                    <input type="text" class="data" name="Title" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <h4>Description</h4>
+                                <br />
+                                <div class="col-md-10">
+                                    <textarea class="data" name="Description"></textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <h4>HasCondition</h4>
+                                <br />
+                                <label class="checkbox-container">
+                                    <input type="checkbox" onchange="conditionStatusChange(this)" class="data" name="HasCondition" />
+                                    <span class="checkmark"></span>
+                                </label>
+
+                            </div>
+                        </div>
+                        <div style="display:inline-block; vertical-align:top; padding-left:50px;">
+                            <div id="condition">
+                                <h3>Conditions</h3>
+                                <div class="form-group">
+                                    <h4>Until</h4>
+                                    <br />
+                                    @*@Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })*@
+
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" class="data" name="Condition%HasRequiredDate" />
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        <input type="date" class="data" name="Condition%Until" />
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <h4>HasRequiredFormat</h4>
+                                    <br />
+                                    <div class="col-md-10">
+                                        <input type="checkbox" class="data" name="Condition%HasRequiredFormat" disabled />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <h4>RequiredFormat</h4>
+                                    <br />
+                                    <div class="col-md-10">
+                                        <input type="text" class="data" name="Condition%RequiredFormat" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h3>Attachments</h3>
+                            <br />
+                            <div class="col-md-10 dublicate-data-group" index="0">
+                                <input type="file" name="[0].Attachments" class="data-field" />
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <a href="#" onclick="sendAction(); return false;" class="btn btn-default" id="formClick">Add home work</a>
+                                @*<input type="submit" value="Create" class="btn btn-default" />*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input id="counterListener" hidden type="number">
+        </div>
+    </div>
+</div>

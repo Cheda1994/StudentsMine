@@ -1,31 +1,125 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+<style>
+    body{
+    font-family: cursive;
+    }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-</div>
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        position:absolute;
+        right:20px;
+    }
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+
+
+    .parent-block {
+        position: absolute;
+        left: 0;
+        bottom: 5%;
+        right: 0;
+        margin: auto;
+        box-shadow: 8px 9px 20px 0px #6960602e;
+        padding: 10px;
+        width: 700px;
+        display: inline-block;
+        background-color: #f1f0f0;
+    }
+
+    .info-block:hover {
+        transition:1s;
+        background-color:white;
+        cursor:pointer;
+    }
+
+
+    .info-block {
+        vertical-align: top;
+        background-color: #e2e2e2;
+        width: 200px;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid #8080804a;
+        border-radius: 10px;
+        /* box-shadow: 0px -1px 1px; */
+        /* margin-top: 50px; */
+        display: inline-block;
+    }
+
+    .info-text {
+        position: relative;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .info-description {
+        height: 40%;
+        background-color: #f1f0f0;
+        margin-top: 5%;
+        border-radius: 10px;
+    }
+
+        .info-description div {
+            position: relative;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            color: #4a4a4a;
+            font-size: 25px;
+            transform: translateY(-50%);
+        }
+    }
+</style>
+@Html.Partial("_PartSignIn")
+@if (!Request.IsAuthenticated) { 
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign In/Sign Up</button>
+}
+<div style="text-align:center;">
+    <h1 style="margin-bottom:0px;">Students mine</h1>
+    <div>
+        <i>Control your course easy</i>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    <div class="info-description">
+        <div >
+            Whelcome to "Students Mine" - most comfortable and ... platform for controll you course resourses.
+            For more detals please select one of the next options.
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="parent-block">
+        <div>
+            Students mine is the servise which help you in the role of teacher
+            <br />
+            easy Create and Control your own courses with
+            <br />
+            students and their projects.
+        </div>
+
+        <div class="info-buttons">
+            <div class="info-block">
+                <div class="info-text">
+                    What does it mean "Create and Control Your own courses"?
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="info-text">
+                    Ok , I created one or more courses , but what I do with it?
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="info-text">
+                    OK! , I created one or more courses AND add send orders to students , but what NOW?
+                    
+                </div>
+            </div>
+        </div>
     </div>
 </div>

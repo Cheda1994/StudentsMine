@@ -48,6 +48,10 @@ namespace StudentsMine.Models
 
     public class AttachmentView
     {
+        public AttachmentView()
+        {
+
+        }
         public AttachmentView(FileData fileData)
         {
             this.Guid = fileData.Guid;
@@ -57,6 +61,9 @@ namespace StudentsMine.Models
         public Guid Guid { get; set; }
         public string Name { get; set; }
         public string Format { get; set; }
+        public int? Course_Id { get; set; }
+        public long? Size { get; set; }
+
     }
 }
  

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +9,7 @@ namespace StudentsMine.Models
     public class HomeWorkTemplate
     {
         public int Id { get; set; }
+        [MaxLength(13)]
         public string Title { get; set; }
         public string Description { get; set; }
         public bool HasCondition { get; set; }
@@ -90,9 +92,11 @@ namespace StudentsMine.Models
             this.ProjectId = project.Id;
             this.StudentName = project.Author.Name;
             this.CurrentMark = project.Mark;
+            this.IsUploaded = project.IsUploaded;
         }
         public int ProjectId { get; set; }
         public string StudentName { get; set; }
+        public bool IsUploaded { get; set; }
         public int CurrentMark { get; set; }
         public Condition Condition { get; set; }
     }

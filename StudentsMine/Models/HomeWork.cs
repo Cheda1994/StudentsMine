@@ -38,6 +38,20 @@ namespace StudentsMine.Models
                 this.Projects.Add(project);
             }
         }
+
+        public void SendRemember()
+        {
+            string emails = "";
+            foreach (var student in this.Course.Students)
+            {
+                emails += student.Email + " ";
+            }
+            string emailBody = "Hi , there is " + this.Course.Teacher.Name + " fom course "+ this.Course.Name+". <br /> I want to remember you about home work '"+ this.Title +"'";
+            Mailer.Mailer mail = new Mailer.Mailer();
+            mail.SetGeter(emails);
+            mail.SetTitleAndBody("Home work remember", emailBody);
+            mail.Send();
+        }
     }
 
 

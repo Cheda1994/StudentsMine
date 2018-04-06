@@ -2,7 +2,17 @@
 @{
     ViewBag.Title = "AddCource";
 }
-
+<script>
+    function addHomeWork(){
+    var json = test();
+    $.ajax({
+        url: "/Cource/AddCource",
+        type: "POST",
+        contentType: 'application/json',
+        data: JSON.stringify({'course' : json})
+    })
+    }
+</script>
 <h2>Add Cource</h2>
 
 @using (Html.BeginForm("AddCource", "Cource", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
@@ -11,16 +21,28 @@
         <div class="form-group">
         @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            @*@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })*@
+            <input type="text" class="data" name="Name" />
         </div>
     </div>
     
     <div class="form-group">
         @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+            @*@Html.TextBoxFor(m => m.Description, new { @class = "form-control" })*@
+            <input type="text" class="data" name="Description" />
         </div>
     </div>
     
     <input type="submit" value="Create Cource"/>
 }
+
+<div>
+    <h3>Base access tamplate</h3>
+    <input type="checkbox" name="BaseAccessProps%AccessToCourse" class="data" />
+    <input type="checkbox" name="BaseAccessProps%CanUploadFiles" class="data" />
+    <input type="checkbox" name="BaseAccessProps%CanDownloadFiles" class="data" />
+    <input type="checkbox" name="BaseAccessProps%AccessToHomeWork" class="data" />
+</div>
+
+<a href="#" class="btn btn-default" onclick="addHomeWork(); return false;">Create Cource</a>

@@ -21,6 +21,7 @@ namespace StudentsMine.Models
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<OrderToCourse> OrdersToCourse { get; set; }
+        public DbSet<StudentAccessProp> StudentAccessProps { get; set; } 
         public DbSet<Course> Courses { get; set; }
         public DbSet<FileData> Files { get; set; }
         public DbSet<HomeWork> Homeworks { get; set; }
@@ -39,6 +40,21 @@ namespace StudentsMine.Models
                 .HasMany(hw => hw.Projects)
                 .WithOptional(p => p.HomeWork).HasForeignKey(x => x.HomeWork_Id)
                 .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<HomeWork>()
+               .HasMany(hw => hw.Attachments)
+               .WithOptional()
+               .WillCascadeOnDelete(true);
+
+            modelBuilder.Entity<Course>()
+                .HasOptional(x => x.BaseAccessProps);
+
+            modelBuilder.Entity<StudentAccessProp>()
+                .HasOptional(x => x.Course)
+                .WithMany(x => x.StudentAccessProps);
+
+
+
         }
     }
 }

@@ -9,14 +9,13 @@ function openMultyPage(heigth, width, x, y , node) {
 }
 
 function messageClick() {
-    console.log()
     var page = $('#multypage')[0];
     if (isOpen) {
         page.style.display = "none";
         isOpen = false;
     } else {
-        var icon = $("#messagesIndic")[0]
-        openMultyPage(400, 350, icon.x, icon.height , page)
+        var icon = $(".nav-login")[0]
+        openMultyPage(400, 350, 0 , icon.offsetHeight, page)
         page.style.display = 'block';
         isOpen = true;
     }

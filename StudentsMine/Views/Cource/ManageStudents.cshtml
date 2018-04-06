@@ -4,17 +4,18 @@
 }
 
 <h2>ManageStudents</h2>
-<div ng-controller="studentsCtrl">
+<div ng-controller="studentsCtrl" id="student-page">
     <div id="active-students">
-        <div ng-repeat="student in Students" class="student-presentation" >
-            <div ng-mouseover="showInfoButton($event)">
+        <div ng-mouseleave="hideInfoButton(this)" ng-mouseover="showInfoButton(this)" class="transformable" ng-repeat="student in Students" ng-class="!isOpen ? 'student-presentation':'student-presentation-open'">
+            <div>
                 Name:
                 <br />
-                <div> {{ student.Name }}</div>
+                <div> {{ !isOpen?student.Name.substring(0 , 10):student.Email }}</div>
                 Email:
                 <br />
-                <div> {{ student.Email }}</div>
-                <div class="show-data-button" ng-hide="isHiden"><b>. . .</b></div>
+                <div> {{ !isOpen?student.Email.substring(0 , 10):student.Email }}</div>
+                <div ng-hide="!isOpen"><access-data></access-data></div>
+                <div class="show-data-button" ng-hide="isHiden" ng-click="openData(this , student.Id , @ViewBag.CourseId)"><b>Show</b></div>
             </div>
         </div>
     </div>
@@ -29,12 +30,35 @@
     </div>
 </div>
 <script>
+    app.directive("accessData" , function($http){
+        return {
+            restrict : "E",
+            templateUrl: '/AngularTemp/_accessBlock.html',
+            link: function(scope){
+                scope.course = @ViewBag.CourseId;
+                scope.updateStudentAccess = function(studentId , repeateElement){
+                    console.log(repeateElement.access);
+                    $http({method:"POST" , url:"/Cource/ChangeAccessToCourse?courseId="+scope.course+"&studentId="+studentId , data:JSON.stringify({'access':repeateElement.access})}).then(function(result){
+                        if (result.data) {
+                            toastr.success('Was successfucly changed');
+                        }else{
+                            toastr.error(result.ErrorMessage);
+                        }
+                    })
+                }
+            }
+        }
+    })
+
+
     app.controller('studentsCtrl', function ($scope, $http) {
+        $scope.courseId = @ViewBag.CourseId;
+        $scope.isHiden = true;
+        $scope.isOpen = false;
         $http({
             method: "GET",
             url: "/Cource/GetAllStudents?courseId=" + @ViewBag.CourseId
             }).then(function (result) {
-
                 $scope.Students = result.data
             })
 
@@ -44,8 +68,26 @@
         }).then(function (result) {
             $scope.orderedStudents = result.data
         })
-        $scope.showInfoButton = function ($event) {
-            console.log($event);
+        $scope.showInfoButton = function (repeateElement) {
+            repeateElement.isHiden = false;
+        }
+        $scope.hideInfoButton = function(repeateElement){
+            repeateElement.isHiden = true;
+        }
+        $scope.openData = function(repeateElement , id , courseId){
+            $http({
+                method: "GET",
+                url: "/Cource/GetAccessToCourse?courseId="+courseId+"&studentId="+id
+            }).then(function(result){
+                console.log(repeateElement.course);
+                console.log( repeateElement.updateStudentAccess);
+                repeateElement.access = {}
+                repeateElement.access.AccessToCourse = result.data.AccessToCourse;
+                repeateElement.access.CanUploadFiles = result.data.CanUploadFiles;
+                repeateElement.access.CanDownloadFiles = result.data.CanDownloadFiles;
+                repeateElement.access.AccessToHomeWork = result.data.AccessToHomeWork;
+            })
+            repeateElement.isOpen = !repeateElement.isOpen;
         }
     })
 </script>

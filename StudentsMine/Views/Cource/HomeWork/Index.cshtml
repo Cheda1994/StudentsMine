@@ -23,40 +23,91 @@
         selectedHomeWork.appendChild(sendButton);
     }
 
+    function downloadFile(guid) {
+        $.ajax({
+            url: "/Cource/GetHWAttachment?fileId=" + guid +"&courseId="+@ViewBag.CourseId,
+            type: "GET",
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data);
+                var hiddenElement = document.createElement('a');
+                hiddenElement.href = 'data:' + data.Format + ";base64,"+ data.DataBase64;
+                hiddenElement.target = '_blank';
+                hiddenElement.download = data.Name;
+                hiddenElement.click();
+            }
+        })
+    }
+
     $(document).ready(function () {
         file = {};
+
         $(".homework-data-row").each(function (index, node) {
             node.onclick = function () {
                 if (threadOnLoad) {
-                    $.amaran({
-                        'message': 'The tread is already busy',
-                        'position': 'bottom',
-                        'outEffect': 'slideLeft'
-                    });
+                    toastr.warning('The tread is already busy');
                 }
                 else
                 {
-                threadOnLoad = true;
-                var id = this.getElementsByClassName("id")[0];
-                selectedProjectId = parseInt(id.value);
-                $.ajax({
-                    url: "/Cource/GetHWProject?projectId=" + selectedProjectId,
-                    type: "GET",
-                    success: function (homeWork) {
-                        threadOnLoad = false;
-                        $("#home-work-prop-holder").fadeOut(100);
-                        feedHomeWorkPresentation(homeWork);
-                    },
-                    error: function (error) {
-                        threadOnLoad = false;
-                    }
-                })
+                    threadOnLoad = true;
+                    var id = this.getElementsByClassName("id")[0];
+                    selectedProjectId = parseInt(id.value);
+                    $.ajax({
+                        url: "/Cource/GetHWProject?projectId=" + selectedProjectId + "&courseId="+ @ViewBag.CourseId ,
+                        type: "GET",
+                        success: function (homeWork) {
+                            if (homeWork.Result) {
+                                threadOnLoad = false;
+                                toastr.warning(homeWork.ErrorMessage);
+                            }else{
+                                threadOnLoad = false;
+                                $("#home-work-prop-holder").fadeOut(100);
+                                feedHomeWorkPresentation(homeWork);
+                            }
+
+                        },
+                        error: function (error) {
+                            threadOnLoad = false;
+                        }
+                    })
                 }
             }
         })
     })
 
     var hw;
+    
+
+    function UploadProject(courseId) {
+        file['ProjectId'] = selectedProjectId;
+        file['Name'] = $("input[type=file]")[0].files[0].name
+        file['FileBase64Data'] = fileBase64;
+        file['Format'] = fileFormat;
+        $.ajax({
+            url: "/Cource/UploadHomeWork?courseId=" + @ViewBag.CourseId,
+            type: "POST",
+            data: JSON.stringify({ model: file }),
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data)
+                if (data.Result) {
+                    toastr.success('Project was successfuly updated')
+                } else {
+                    toastr.warning(data)
+                }
+
+            },
+            error: function (error) {
+                toastr.warning(error)
+            }
+        })
+    }
+
+    function feed2(){
+        
+    }
+
+
     function feedHomeWorkPresentation(homeWork) {
         var selectedHomeWork = $("#selected-homework")[0];
         var hwTitleNode = $("#hwDescription")[0]
@@ -64,27 +115,74 @@
         var hwAttachmentsNode = $("#hwAttachments")[0]
         hwAttachmentsNode.innerHTML = "";
         var hwConditionsNode = $("#hwConditions")[0]
+        var hwInputFileNode = $("#hwInputFileNode")[0]
         hwConditionsNode.innerHTML = "";
+        hwInputFileNode.innerHTML = "";
         var hwTitle = document.createElement("h2")
-        var hwDescription = document.createElement("h3")
-        var hwMark = document.createElement("b")
+        var descriptionTitle = document.createElement("h3")
+        descriptionTitle.textContent = "Description:"
+        var hwDescription = document.createElement("h4")
+        var hwMark = document.createElement("h2")
         var hwInputFile = document.createElement("input")
         if (homeWork.HasCondition) {
-            var hwConditionUntil = document.createElement("span");
-            var hwConditionIsBlocked = document.createElement("span");
-            var hwConditionRequiredFormat = document.createElement("span");
+            var conditionTitle = document.createElement("h3");
+            var hwConditionUntil = document.createElement("h4");
+            var hwConditionIsBlocked = document.createElement("h4");
+            var hwConditionRequiredFormat = document.createElement("h4");
+            conditionTitle.textContent = "Conditions: ";
+            hwConditionsNode.appendChild(conditionTitle);
+            hwConditionIsBlocked.textContent = "Is already blocked: " + homeWork.Condition.IsBlocked ;
+            hwConditionsNode.appendChild(hwConditionIsBlocked);
+            var regex = new RegExp(/\((.*?)\)/);
+            if (homeWork.HasCondition.HasRequiredDate) {
+                var date = new Date(parseInt(regex.exec(homeWork.Condition.Until)[1]))
+                hwConditionUntil.textContent = "You have finish it until: "  + date.getDate() + "."+ (date.getMonth()+1) + "." +date.getFullYear()
+                hwConditionsNode.appendChild(hwConditionUntil);
+            }
+        }
+        if (homeWork.Attachments.length > 0) {
+            var attacmentTitle = document.createElement("h3");
+            attacmentTitle.textContent = "Attachments :"
+            hwAttachmentsNode.appendChild(attacmentTitle)
         }
         homeWork.Attachments.forEach(function (file) {
+            console.log(file)
             var fileNode = document.createElement('div');
             var fileIcon = document.createElement('img');
             var fileName = document.createElement('b');
-            if (file.Name.length > 10) {
-                fileName.textContent = file.Name.slice(0, 10) + '...';
+            if (file.Name.length > 7) {
+                fileName.textContent = file.Name.slice(0, 5) + '...';
             } else {
                 fileName.textContent = file.Name;
             }
             fileNode.title = file.Name;
-            fileIcon.src = '/Content/themes/base/images/document-icon.png'
+            format = file.Name.split('.')[1];
+            imageSrc = '';
+            if (true) {
+                switch (format) {
+                    case 'txt':
+                        imageSrc ='/Content/themes/base/images/icons/textIcon.png'
+                        break;
+                    case 'doc':
+                    case 'docx':
+                        imageSrc = '/Content/themes/base/images/icons/wordIcon.png'
+                        break;
+                    case 'jpg':
+                    case 'png':
+                    case 'jpeg':
+                        imageSrc ='/Content/themes/base/images/icons/imageIcon.png'
+                        break;
+                    case 'zip':
+                    case 'rar':
+                        imageSrc ='/Content/themes/base/images/icons/archiveIcon.png'
+                        break;
+                    default:
+                        imageSrc ='/Content/themes/base/images/icons/templateIcon.png'
+                        break;
+        
+                }
+                fileIcon.src = imageSrc
+            }
             fileNode.onclick = function () {
                 downloadFile(file.Guid);
             }
@@ -98,115 +196,98 @@
         hwTitle.setAttribute("class", "home-work-area title");
         hwMark.textContent = homeWork.Mark;
         hwMark.setAttribute("class", "home-work-area description");
+        hwMark.setAttribute("style", "float:right;")
         hwDescription.textContent = homeWork.Description;
         hwDescription.setAttribute("class", "home-work-description");
         hwInputFile.setAttribute("type", "file");
         hwInputFile.setAttribute("id", "home-work-project");
-        hwInputFile.onchange = function () 
+        hwInputFile.onchange = function ()
         {
             reader.readAsDataURL(this.files[0]);
             fileName = this.files[0].name;
         }
         hwTitleNode.appendChild(hwTitle);
         hwTitleNode.appendChild(hwMark);
+        hwTitleNode.appendChild(descriptionTitle);
         hwTitleNode.appendChild(hwDescription);
-        hwTitleNode.appendChild(hwInputFile);
+        if (homeWork.Condition == null) {
+            hwInputFileNode.appendChild(hwInputFile);
+        }else if (!homeWork.Condition.IsBlocked) {
+            hwInputFileNode.appendChild(hwInputFile);
+        }
+
     }
 
-    function UploadProject() {
-        file['ProjectId'] = selectedProjectId;
-        file['Name'] = $("input[type=file]")[0].files[0].name
-        file['FileBase64Data'] = fileBase64;
-        file['Format'] = fileFormat;
-        $.ajax({
-            url: "/Cource/UploadHomeWork",
-            type: "POST",
-            data: JSON.stringify({ model: file }),
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(data)
-                if (data.Result) {
-                    $.amaran({
-                        'message': 'Project was successfuly updated',
-                        'position': 'bottom',
-                        'outEffect': 'slideLeft'
-                    });
-                } else {
-                    $.amaran({
-                        'message': data,
-                        'position': 'bottom',
-                        'outEffect': 'slideLeft'
-                    });
-                }
 
-            },
-            error: function (error) {
-                alert(error)
-            }
-        })
-    }
 
-    function downloadFile(guid) {
-        $.ajax({
-            url: "/Cource/GetHWAttachment?fileId=" + guid,
-            type: "GET",
-            contentType: 'application/json',
-            success: function (data) {
-                console.log(data);
-                var hiddenElement = document.createElement('a');
-                hiddenElement.href = 'data:' + data.Format + ";base64,"+ data.DataBase64;
-                hiddenElement.target = '_blank';
-                hiddenElement.download = data.Name;
-                hiddenElement.click();
-            }
-        })
-    }
 </script>
 
-
-<div id="home-work-list">
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Finish until</th>
-                <th>Mark</th>
-            </tr>
-        </thead>
-        <tbody>
-            @ViewBag.Role
-            @foreach (var item in Model)
-            {
-                <tr class="homework-data-row">
-                    <td>
-                        @item.Title
-                    </td>
-                    <td>
-                        @item.Description
-                    </td>
-                    <td>
-                        @item.ConditionUntil
-                    </td>
-                    <td>
-                        @item.Mark
-                    </td>
-                    <td hidden>
-                        <input class="id" value="@item.Id" />
-                    </td>
+<div class=" home-work" id="home-work-page">
+    <div id="home-work-list">
+        <table style="width: 600px;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Finish until</th>
+                    <th>Mark</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
-<div id="selected-homework">
-    <div id="home-work-prop-holder">
-        Selected home work
+            </thead>
+            <tbody>
+                @ViewBag.Role
+                @foreach (var item in Model)
+                {
+                    <tr class="homework-data-row">
+                        <td>
+                            @item.Title
+                        </td>
+                        @if (!item.Description.IsEmpty())
+                        {
+                            if (item.Description.Length > 10)
+                            {
+                                <td>
+                                    @String.Concat(@item.Description.Substring(0, 10), "...")
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @item.Description
+                                </td>
+                            }
+
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
+                        <td>
+                            @item.ConditionUntil
+                        </td>
+                        <td>
+                            @item.Mark
+                        </td>
+                        <td hidden>
+                            <input class="id" value="@item.Id" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-    <div id="hwDescription">
-    </div>
-    <div id="hwAttachments">
-    </div>
-    <div id="hwConditions">
+    <div id="selected-homework">
+        <div id="home-work-prop-holder">
+            Selected home work
+        </div>
+        <div id="hwDescription">
+        </div>
+        <div id="hwAttachments">
+        </div>
+        <div id="hwConditions">
+        </div>
+        <div id="hwInputFileNode">
+
+        </div>
     </div>
 </div>

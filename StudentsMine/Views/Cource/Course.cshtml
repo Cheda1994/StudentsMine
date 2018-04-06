@@ -5,17 +5,55 @@
     function holder(id) {
         $("#content").load("/Cource/AddHomeWork?courceId=" + id)
     }
-
+    function linkEvent(method,controller) {
+        window.open('/' + controller + '/' + method + '?courseId=' + @ViewBag.CourseId);
+    }
 </script>
 <h2>@Model.Name Course</h2>
 <p>
     <h3>@Model.Description</h3>
 </p>
-<p>
-    <div>Home Work</div>
-    <div>Projects hub</div>
-    <div>Course chat</div>
-</p>
-<div></div>
-@Html.ActionLink("Add students", "CreateStudent", "Student", new { id = ViewBag.CourseId } , null)
-<a onclick="holder(2)">Add home work</a>
+<div style="text-align:center;">
+    <p>
+            <div class="course-obtions-buttons short" onclick="linkEvent('HomeWorkIndex', 'Cource')">
+                <div class="button-content">
+                    Home Work
+                    <br />
+                    <img src="/Content/themes/base/images/homeWorkIcon.png" style="width:30%" />
+                </div>
+            </div>
+        <div class="course-obtions-buttons short" onclick="linkEvent('ProjectsHub', 'Cource')">
+            <div class=" button-content">
+            Projects HUB
+            <br />
+            <img src="/Content/themes/base/images/hubIcon.png" style="width:30%" />
+        </div>
+        </div>
+        @if (User.IsInRole("Teacher"))
+{
+    <div class="course-obtions-buttons short" onclick="linkEvent('managestudents' , 'Cource')">
+        <div class="button-content">
+            Menage Students
+            <br />
+            <img src="/Content/themes/base/images/menageIcon.png" style="width:30%" />
+        </div>
+    </div>
+}
+else
+{
+    <div class="course-obtions-buttons short disabled">
+        <div class="button-content">
+            Live lesson
+            <br />
+            <img src="/Content/themes/base/images/liveofflineIcon.png" style="width:30%" />
+        </div>
+    </div>
+}
+        <div class="course-obtions-buttons long disabled">
+            Course chat
+            <img src="/Content/themes/base/images/chatIcon.png" style="height:50%" />
+        </div>
+
+    </p>
+</div>
+@Html.ActionLink("Add students", "CreateStudent", "Student", new { id = ViewBag.CourseId }, null)

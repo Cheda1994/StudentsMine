@@ -1,0 +1,306 @@
+﻿    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+
+        .logInButton, .registerButton {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            position: relative;
+        }
+        
+        
+         button:hover {
+            opacity: 0.8;
+        }
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+    left:20px;
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+.container-login {
+    text-align: center;
+}
+/* Center the image and position the close button */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+
+img.avatar {
+    width: 40%;
+    border-radius: 50%;
+}
+
+.container-register , .container-login {
+    display:none;
+}
+        
+        
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    /*padding-top: 60px;*/
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    min-width:590px;
+    width: 40%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.container-options {
+    text-align:center;
+}
+
+.container-options .centred-text{
+    font-size:20px;
+    color:white;
+}
+
+
+
+.close:hover,
+.close:focus {
+color: red;
+cursor: pointer;
+}
+
+.register-button, .login-button {
+    cursor:pointer;
+    width: 200px;
+    height: 100px;
+    display:inline-block;
+    background-color: #4CAF50;
+}
+
+        .register-button:hover, .login-button:hover {
+            transform: scale(1.2);
+            transition: 1s;
+            background-color: #28dc2f;
+        }
+/* Add Zoom Animation */
+        .animate {
+            -webkit-animation: animatezoom 0.6s;
+            animation: animatezoom 0.6s;
+            animation-duration: 1s;
+        }
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+             border-top: 16px solid blue;
+ border-right: 16px solid green;
+ border-bottom: 16px solid red;
+            border-radius: 50%;
+            display:inline-block;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        .container-holder{
+            display:none;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+@@-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)}
+    to {-webkit-transform: scale(1)}
+}
+
+        @@keyframes animatehide {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.15);
+            }
+        }
+
+@@keyframes animatezoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@@media screen and (max-width: 300px; min-width:250px;) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+    .cancelbtn {
+       width: 100%;
+    }
+}
+    </style>
+<script>
+    function logIn() {
+        $(".container-login")[0].style.display = "none";
+        $(".container-holder")[0].style.display = "block";
+        data = {};
+        result = {};
+        data['UserName'] = $("input[name='model.UserName']")[0].value;
+        data['Password'] = $("input[name='model.Password']")[0].value;
+        result.model = data;
+        data['__RequestVerificationToken'] = $('input[name=__RequestVerificationToken]').val();
+        $.ajax({
+            url: "/Account/Login",
+            type: "POST",
+            data: data,
+            success: function () {
+                window.open("/Cource" , "_self")
+            }
+        })
+    }
+
+    function showLogin() {
+        $(".container-options")[0].style.display = "none";
+        $(".container-login")[0].style.display = "block";
+    }
+
+    function showRegister() {
+        $(".container-options").animate({
+            opacity: "0"
+        }, 1000, function () {
+            $(".container-options")[0].style.display = "none";
+            $(".container-register")[0].style.display = "block";
+            $(".container-register").animate({ opacity: "1" })
+
+
+        })
+    }
+</script>
+    <div id="id01" class="modal">
+
+        <form class="modal-content animate" action="/Account/Login">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="/Content/themes/base/images/signInLogo.png" alt="Avatar" class="avatar">
+            </div>
+            @Html.AntiForgeryToken()
+            <div class="container">
+                <div class="container-holder">
+                    <div class="loader"></div>
+                </div>
+                <div class="container-options">
+                    <div class="register-button" onclick="showRegister();">
+                        <div class="centred-text">
+                            Sign Up
+                        </div>
+                    </div>
+                    <div class="login-button" onclick="showLogin();">
+                        <div class="centred-text">
+                            Sign In
+                        </div>
+                    </div>
+
+                </div>
+                <div class="container-login">
+                    <p>
+                        <label for="uname"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" class="login" name="model.UserName" required>
+                    </p>
+                    <p>
+                        <label for="psw"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" class="login" name="model.Password" required>
+                    </p>
+                    <div style="position:relative;" class="logInButton" onclick="logIn();" type="submit">Login</div>
+                    <label>
+                        <input type="checkbox" checked="checked" name="RememberMe"> Remember me
+                    </label>
+                </div>
+                <div class="container-register">
+                    <p>
+                        <label for="uname"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" class="register" name="model.UserName" required>
+                    </p>
+                    <p>
+                        <label for="psw"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" class="register" name="model.Password" required>
+                    </p>
+                    <button style="position:relative;" class="registerButton" type="submit">Login</button>
+                    <label>
+                        <input type="checkbox" checked="checked" name="RememberMe"> Remember me
+                    </label>
+                </div>
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+                <span class="psw">Forgot <a href="#">password?</a></span>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById('id01');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>

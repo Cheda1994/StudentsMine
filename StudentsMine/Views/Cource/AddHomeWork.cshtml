@@ -86,64 +86,69 @@
         }
     }
 </script>
-@using (Html.BeginForm("AddHomeWork", "Cource", new { courseId = ViewBag.CourceId }, FormMethod.Post, new { id = "form" }))
-{
-    
+<div id="home-work-page">    
     <div class="form-horizontal">
         <input name="id" value="@ViewBag.CourceId" hidden />
 
         <h4>HomeWork</h4>
         <hr />
-        @Html.ValidationSummary(true)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Title, new { @class = "control-label col-md-2" })
+            <h4>Title</h4>
+            <br />
             <div class="col-md-10">
                 <input type="text" class="data" name="Title" />
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <h4>Description</h4>
+            <br />
             <div class="col-md-10">
                 <textarea class="data" name="Description" ></textarea>
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.HasCondition, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <h4>HasCondition</h4>
+            <br />
+            <div class="col-md-10 btn btn-secondary active">
                 <input type="checkbox" onchange="conditionStatusChange(this)" class="data" name="HasCondition" />
             </div>
         </div>
 
         <div id="condition">
-            
+            <h3>Conditions</h3>
             <div class="form-group">
-                <b class="control-label col-md-2">Until</b>
+                <h4>Until</h4>
+                <br />
                 @*@Html.LabelFor(model => model.Condition.Until, new { @class = "control-label col-md-2" })*@
-                <div class="col-md-10">
-                    <input type="date" class="data" name="Condition%Until" />
+                <div class="btn-group-toggle" data-toggle="buttons">
+                    <div class="col-md-10">
+                        <input type="checkbox" class="data" name="Condition%Until" />
+                    </div>
                 </div>
-            </div>
-
+</div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Condition.HasRequiredFormat, new { @class = "control-label col-md-2" })
+                <h4>HasRequiredFormat</h4>
+                <br />
                 <div class="col-md-10">
                     <input type="checkbox" class="data" name="Condition%HasRequiredFormat" disabled />
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Condition.RequiredFormat, new { @class = "control-label col-md-2" })
+                <h4>RequiredFormat</h4>
+                <br />
                 <div class="col-md-10">
                     <input type="text" class="data" name="Condition%RequiredFormat" disabled />
                 </div>
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.Attachments, new { @class = "control-label col-md-2" })
+            <h3>Attachments</h3>
+            <br />
             <div class="col-md-10 dublicate-data-group" index="0">
                 <input type="file" name="[0].Attachments" class="data-field" />
             </div>
@@ -158,11 +163,8 @@
             </div>
         </div>
     </div>
-}
-<form id="form1"></form>
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
+
 <input id="counterListener" hidden type="number">
 
 

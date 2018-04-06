@@ -1,0 +1,19 @@
+﻿<div>
+    Access to course
+    <br />
+    <input type="checkbox" ng-model="access.AccessToCourse"  />
+    <br />
+    Can Upload Files
+    <br />
+    <input type="checkbox" ng-model="access.CanUploadFiles"  />
+    <br />
+    Can Download Files
+    <br />
+    <input type="checkbox" ng-model="access.CanDownloadFiles"  />
+    <br />
+    Access To Home Work
+    <br />
+    <input type="checkbox" ng-model="access.AccessToHomeWork"  />
+    <br />
+    <div ng-click="updateStudentAccess(student.Id , this)">Update</div>
+</div>

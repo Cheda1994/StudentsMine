@@ -1,0 +1,116 @@
+﻿@model List<StudentsMine.Models.HomeWorkStudentListView>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    var file;
+    var selectedProjectId;
+    var fileName;
+    var fileBase64;
+    var fileFormat;
+    var threadOnLoad = false;
+    var reader = new FileReader();
+    reader.onload = function () {
+        var sliceResult = reader.result.split(',');
+        fileFormat = sliceResult[0];
+        fileBase64 = sliceResult[1];
+        var sendButton = document.createElement("a")
+        sendButton.setAttribute("class", "btn btn-success")
+        sendButton.onclick = UploadProject;
+        sendButton.text = "Send";
+        var selectedHomeWork = $("#selected-homework")[0];
+        selectedHomeWork.appendChild(sendButton);
+    }
+
+    function downloadFile(guid) {
+        $.ajax({
+            url: "/Cource/GetHWAttachment?fileId=" + guid,
+            type: "GET",
+            contentType: 'application/json',
+            success: function (data) {
+                console.log(data);
+                var hiddenElement = document.createElement('a');
+                hiddenElement.href = 'data:' + data.Format + ";base64,"+ data.DataBase64;
+                hiddenElement.target = '_blank';
+                hiddenElement.download = data.Name;
+                hiddenElement.click();
+            }
+        })
+    }
+
+
+    function test() {
+        
+    }
+</script>
+
+<div class=" home-work" id="home-work-page">
+    <div id="home-work-list">
+        <table style="width: 600px;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Finish until</th>
+                    <th>Mark</th>
+                </tr>
+            </thead>
+            <tbody>
+                @ViewBag.Role
+                @foreach (var item in Model)
+                {
+                    <tr class="homework-data-row">
+                        <td>
+                            @item.Title
+                        </td>
+                        @if (!item.Description.IsEmpty())
+                        {
+                            if (item.Description.Length > 10)
+                            {
+                                <td>
+                                    @String.Concat(@item.Description.Substring(0, 10), "...")
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @item.Description
+                                </td>
+                            }
+
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+
+                        <td>
+                            @item.ConditionUntil
+                        </td>
+                        <td>
+                            @item.Mark
+                        </td>
+                        <td hidden>
+                            <input class="id" value="@item.Id" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="selected-homework">
+        <div id="home-work-prop-holder">
+            Selected home work
+        </div>
+        <div id="hwDescription">
+        </div>
+        <div id="hwAttachments">
+        </div>
+        <div id="hwConditions">
+        </div>
+        <div id="hwInputFileNode">
+
+        </div>
+    </div>
+</div>

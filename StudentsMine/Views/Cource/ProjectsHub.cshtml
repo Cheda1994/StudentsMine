@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "ProjectsHub";
+}
+<script>
+    app.controller('projectHubCtrl', function ($scope, $http) {
+        $scope.download = function (guid) {
+            $http({
+                url: '/Cource/GetHWAttachment?fileId=' + guid+"&courseId=@ViewBag.CourseId",
+                method: "GET"
+            }).then(function (result) {
+                data = result.data
+                var hiddenElement = document.createElement("a");
+                hiddenElement.href = data.Format +","+ data.DataBase64;
+                hiddenElement.target = '_blank';
+                hiddenElement.download = data.Name;
+                hiddenElement.click();
+            })
+
+        }
+        $scope.setImage = function (img) {
+            format = img.split('.');
+            format = format[format.length - 1]
+            imageSrc = '';
+            if (true) {
+                switch (format) {
+                    case 'txt':
+                        imageSrc = '/Content/themes/base/images/icons/textIcon.png'
+                        break;
+                    case 'doc':
+                    case 'docx':
+                        imageSrc = '/Content/themes/base/images/icons/wordIcon.png'
+                        break;
+                    case 'jpg':
+                    case 'png':
+                    case 'jpeg':
+                        imageSrc = '/Content/themes/base/images/icons/imageIcon.png'
+                        break;
+                    case 'zip':
+                    case 'rar':
+                        imageSrc = '/Content/themes/base/images/icons/archiveIcon.png'
+                        break;
+                    default:
+                        imageSrc = '/Content/themes/base/images/icons/templateIcon.png'
+                        break;
+
+                }
+            }
+            return imageSrc;
+        }
+        $http({
+            method: "GET",
+            url: "/Cource/ProjectsHubFiles?courseId=@ViewBag.CourseId"
+        }).then(function (result) {
+            $scope.files = result.data
+        })
+    })
+</script>
+<div class=" home-work" id="home-work-page">
+<div ng-controller="projectHubCtrl">
+    <div ng-repeat="file in files" class="hub-project">
+        <div ng-click="download(file.Guid)">
+            <div style="display:inline-block;vertical-align:top;">
+                <img src="{{setImage(file.Name)}}" />
+            </div>
+            <div style="display:inline-block">
+                <div style="display:inline-block">{{file.Name}}</div>
+                <br />
+                <div style="display:inline-block">{{file.Size/1000 | number:2}} KB</div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</div>

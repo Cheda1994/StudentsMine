@@ -37,6 +37,10 @@ namespace StudentsMine.Controllers
             return View();
         }
 
+        public string GetCurrentUserId()
+        {
+            return User.Identity.GetUserId();
+        }
         //
         // POST: /Account/Login
         [HttpPost]
@@ -122,6 +126,13 @@ namespace StudentsMine.Controllers
                     {
                         var student = UserManager.FindByName(user.UserName);
                         UserManager.AddToRole(student.Id, "Student");
+                        Mailer.Mailer mail = new Mailer.Mailer();
+                        mail.SetGeter(user.Student.Email);
+                        string emailText = "You was ordet to the course ****** , by *******. <br /> ";
+                        emailText += "User name: "+user.UserName+" <br /> ";
+                        emailText += "Password: 111111";
+                        mail.SetTitleAndBody("Order to Course", emailText);
+                        mail.Send();
                     }
                 }
                 else
@@ -225,8 +236,7 @@ namespace StudentsMine.Controllers
 
         //
         // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();

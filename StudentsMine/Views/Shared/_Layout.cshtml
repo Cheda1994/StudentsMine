@@ -1,4 +1,4 @@
-﻿7<html>
+﻿<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,56 +10,42 @@
 
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>  
-    <link rel="stylesheet" href="/Content/css/amaran.min.css">
-    <script src="/Scripts/jquery.amaran.js"></script>
+    <link href="/Content/toastr.css" rel="stylesheet" />
+    <script src="/Scripts/toastr.js"></script>
     <script src="/Scripts/inputSerializer.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
     <script src="https://code.angularjs.org/1.4.5/angular-route.js"></script>    
     <script>
-        var app = angular.module('studentsMine', []);=][]
+        var app = angular.module('studentsMine', ['ngAnimate']);
     </script>
 </head>
 <body>
+    @*<div id="body-bg">
+        <div id="bg-img-1"></div>
+        <div id="bg-img-2"></div>
+    </div>*@
     <div ng-app="studentsMine">
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @Html.ActionLink("Application name", "Index", "Home", null, new { @class = "navbar-brand" })
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                        <li>@Html.ActionLink("About", "About", "Home")</li>
-                        <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    </ul>
-                    @Html.Partial("_LoginPartial")
-                </div>
-            </div>
-        </div>
+        @if (Request.IsAuthenticated)
+        {
+            @Html.Partial("_LoginPartial")
+        }
         <div class="container body-content">
             @RenderBody()
-            <hr />
-            <footer>
-                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-            </footer>
         </div>
         <script src="/Scripts/multypage.js"></script>
         @Scripts.Render("~/bundles/bootstrap")
         @RenderSection("scripts", required: false)
         <script>
 
-            app.controller('ordersCtrl', function ($scope, $http) {
+            app.controller('ordersCtrl', function ($scope, $http, $rootScope) {
+                $scope.ordersLen = 0;
                 $http({
                     method: "GET",
                     url: "/Cource/OrdersToCource"
                 }).then(function (result) {
-
-                    $scope.orders = result.data
+                    console.log(result)
+                    $rootScope.orders = result.data
                 })
 
                 $scope.successOrder = function (id, item, eventCaller) {
@@ -69,7 +55,7 @@
                     }).then(function (result) {
                         var index = $scope.orders.indexOf(item);
                         console.log(item);
-                        $scope.orders.splice(index, 1);
+                        $rootScope.orders.splice(index, 1);
                     })
                 }
 
@@ -79,10 +65,8 @@
                         url: "/Cource/RejectOrderToCourse?orderId=" + id
                     }).then(function (result) {
                         var index = $scope.orders.indexOf(item);
-                        console.log(item);
-                        $scope.orders.splice(index, 1);
-                    })
-                }
+                        $rootScope.orders.splice(index, 1);
+                    })                }
             })
         </script>
     </div>
