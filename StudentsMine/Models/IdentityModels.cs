@@ -27,7 +27,7 @@ namespace StudentsMine.Models
         public DbSet<HomeWork> Homeworks { get; set; }
         public DbSet<Project> Projects { get; set; }
         public ApplicationDbContext()
-            : base("DefaultConnection")
+            : base("YourConnectionName")
         {
         }
 

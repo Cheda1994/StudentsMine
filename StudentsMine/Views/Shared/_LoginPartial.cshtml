@@ -174,5 +174,15 @@
             <img class="side-image" src="/Content/themes/base/images/AllCourses.png" />
         </div>
     </div>
-
+    @if (ViewBag.CourseId != null)
+    {
+    <div class="sb-block allcourses-block" onclick="sideBarButton('/Cource')">
+        <div class="sb-name-block user-name-block">
+            All Courses
+        </div>
+        <div style="float: right; width: 75px; height: 75px;">
+            <img class="side-image" src="/Content/themes/base/images/AllCourses.png" />
+        </div>
+    </div>
+    }
 </div>

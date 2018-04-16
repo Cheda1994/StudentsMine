@@ -217,8 +217,9 @@
             type: "GET",
             contentType: "application/json",
             success: function (result) {
+                console.log(node.parentElement)
                 if (result.Result) {
-                    $(this).fadeOut(500);
+                    $(node.parentElement).fadeOut(500);
                     toastr.success('Was succesfuly removed');
                 } else {
                     toastr.error(result.ErrorMessage);
@@ -268,9 +269,7 @@
 </script>
 <div id="home-work-page">
     <div class="home-work-options">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-            Add Home Work
-        </button>
+
 
     </div>
     <div class="home-work">
@@ -338,6 +337,9 @@
                 Selected home work
             </div>
         </div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style="border-radius:50%;position:absolute">
+            +
+        </button>
     </div>
 </div>
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

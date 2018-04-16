@@ -31,17 +31,20 @@ namespace StudentsMine.Models
 
     public class CreateStudentView : RegisterViewModel
     {
+        public int UIId { get; set; }
         public string Name { get; set; }
     }
 
     public class OrderStudentToCourceView
     {
+        public int UIId { get; set; }
         public string Email {get;set;}
     }
     public class SudentRegistrationStatus
     {
         public SudentRegistrationStatus(CreateStudentView Student, bool Result, StudentRegResults status,  IEnumerable<string> ErrorMessage)
         {
+            this.UIId = Student.UIId;
             this.Status = status;
             this.Email = Student.Email;
             this.Name = Student.Name;
@@ -58,6 +61,7 @@ namespace StudentsMine.Models
                 }
             }
         }
+        public int UIId { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
         public bool Result { get; set; }
@@ -67,6 +71,10 @@ namespace StudentsMine.Models
     }
 
     public class SudentAddToCourseStatus {
+        public SudentAddToCourseStatus(string email , bool result , StudentRegResults status, IEnumerable<string> ErrorMessage , int UIId) :this( email ,  result ,  status,  ErrorMessage)
+        {
+            this.UIId = UIId;
+        }
         public SudentAddToCourseStatus(string email , bool result , StudentRegResults status, IEnumerable<string> ErrorMessage)
         {
             this.Email = email;
@@ -85,6 +93,7 @@ namespace StudentsMine.Models
             }
         }
         public string Email { get; set; }
+        public int UIId { get; set; }
         public bool Result { get; set; }
         public StudentRegResults Status { get; set; }
         public string ErrorMessage { get; set; }

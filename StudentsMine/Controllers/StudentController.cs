@@ -56,12 +56,16 @@ namespace StudentsMine.Controllers
                     {
                         if (AlreadyHasOrder(courseId , item.Email))
                         {
-                            results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.AlreadyOrdered, new List<string>() { "This email " + item.Email + " is already orderd" }));
+                            results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.AlreadyOrdered, new List<string>() { "This email " + item.Email + " is already orderd." }));
                         }
                         else
                         {
                             results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.EmailExists, new List<string>() { "This email "+ item.Email +" is already exists" }));
                         }
+                    }
+                    else
+                    {
+                        results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.Exception, new List<string>() { "This email " + item.Email + " is already exists and cannot be added to youre course." }));
                     }
                 }
                 var json = new JavaScriptSerializer().Serialize(results);
@@ -101,8 +105,7 @@ namespace StudentsMine.Controllers
                 SudentAddToCourseStatus result;
                 if (IsStudent(item.Email))
                 {
-                    result = await SendOrderToCourse(item.Email, courseId);
-                    
+                    result = await SendOrderToCourse(item.Email, courseId);            
                 }
                 else
                 {

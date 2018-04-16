@@ -168,17 +168,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201802141613359_Init#2.cs" />
-    <Compile Include="Migrations\201802141613359_Init#2.Designer.cs">
-      <DependentUpon>201802141613359_Init#2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802281930207_CascadeMigrateonDelete.cs" />
-    <Compile Include="Migrations\201802281930207_CascadeMigrateonDelete.Designer.cs">
-      <DependentUpon>201802281930207_CascadeMigrateonDelete.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201802282013474_LengthTitle.cs" />
-    <Compile Include="Migrations\201802282013474_LengthTitle.Designer.cs">
-      <DependentUpon>201802282013474_LengthTitle.cs</DependentUpon>
+    <Compile Include="Migrations\201804071019238_Init.cs" />
+    <Compile Include="Migrations\201804071019238_Init.Designer.cs">
+      <DependentUpon>201804071019238_Init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -198,6 +190,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\CheckBoxSyle.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -274,6 +267,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\toastr.scss" />
     <Content Include="Content\toastr.less" />
+    <Content Include="Content\CheckBoxSyle.scss" />
+    <None Include="Properties\PublishProfiles\test.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
@@ -367,21 +362,15 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201802141613359_Init#2.resx">
-      <DependentUpon>201802141613359_Init#2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802281930207_CascadeMigrateonDelete.resx">
-      <DependentUpon>201802281930207_CascadeMigrateonDelete.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201802282013474_LengthTitle.resx">
-      <DependentUpon>201802282013474_LengthTitle.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Mailer\Mailer.csproj">
       <Project>{c66ff8de-c214-40ea-aa65-f1b8e022bec8}</Project>
       <Name>Mailer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201804071019238_Init.resx">
+      <DependentUpon>201804071019238_Init.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -404,8 +393,7 @@
           <IISUrl>http://localhost:19625/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>http://danieltestproject.com</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

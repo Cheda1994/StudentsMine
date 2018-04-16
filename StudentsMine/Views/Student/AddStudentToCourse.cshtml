@@ -4,32 +4,54 @@
 }
 <script src="/Scripts/duplicator.js"> </script>
 <script src="/Scripts/createStudent.js"> </script>
-<h2>@ViewBag.Title.</h2>
+<style>
+    .create-students-block {
+        width: 1125px;
+        padding: 10px;
+        margin: 10px;
+        box-shadow: 0 0.1rem 0.2rem rgba(0,0,0,0.12), 0 0 0.1rem rgba(0,0,0,0.12);
+        height: 550px;
+        background-color:white;
+        overflow: auto;
+    }
+    .dublicate-data-group {
+        display: inline-block;
+        width: 350px;
+        padding: 10px;
+        margin: 5px;
+        box-shadow: 8px 9px 20px 0px #6960602e;
+        border-radius: 3px;
+    }
+    .error-message {
+        text-align: center;
+    }
+</style>
 
-@using (Ajax.BeginForm("AddStudentToCourse", "Student", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divEmp" }, new { @class = "form-horizontal", role = "form" }))
-{
 
+@*@using (Ajax.BeginForm("AddStudentToCourse", "Student", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divEmp" }, new { @class = "form-horizontal", role = "form" }))
+{*@
+<div style=" top: 50%; transform: translateY(-50%); position: relative;">
+    <div class="form-horizontal create-students-block">
 
-    @Html.AntiForgeryToken();
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary()
-    @Html.Hidden("courseId")
+    @Html.AntiForgeryToken()
     <div class="dublicate-data-group" index='0'>
+        <input name="[0].email%UIId" class="data-field data UIId" hidden />
         <div class="form-group">
-            @Html.LabelFor(m => m[0].Email, new { @class = "col-md-2 control-label" })
+            <label class="col-md-2 control-label">
+                Email
+            </label>
+            @*@Html.LabelFor(m => m[0].Email, new { @class = "col-md-2 control-label" })*@
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m[0].Email, new { @class = "form-control data-field" })
+                <input type="text" name="[0].email%Email" class="form-control data-field data" />
+                @*@Html.TextBoxFor(m => m[0].Email, new { @class = "form-control data-field" })*@
             </div>
         </div>
-    </div>
-    //First
+        <div class="error-message">
 
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
         </div>
     </div>
-}
+        </div>
+    <div class="btn btn-default" onclick='createStudents(@ViewData["courseId"] , "AddStudentToCourse")'>Add to course</div>
+    </div>
+@*  *@}
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Students Mine";
 }
 <style>
     body{
@@ -77,8 +77,22 @@
             font-size: 25px;
             transform: translateY(-50%);
         }
+    .carusel-element{
+        display:none;
     }
+
+
 </style>
+<script>
+    function setCarusel(index) {
+        var old = $(".info-description .active");
+        old.fadeOut(300);
+        old.removeClass("active");
+        var newEl = $(".carusel-element[index=" + index + "]");
+        newEl.addClass("active");
+        newEl.fadeIn(300);
+    }
+</script>
 @Html.Partial("_PartSignIn")
 @if (!Request.IsAuthenticated) { 
 <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign In/Sign Up</button>
@@ -89,9 +103,17 @@
         <i>Control your course easy</i>
     </div>
     <div class="info-description">
-        <div >
+        <div class="carusel-element active" index="0" style="display:block;">
             Whelcome to "Students Mine" - most comfortable and ... platform for controll you course resourses.
             For more detals please select one of the next options.
+        </div>
+        <div class="carusel-element" index="1">
+            On the main page you can create your course with name,description and template permision. Every course has home work repository(library), hub with students projects , chanel for online lessons(beta) and course chat(beta).
+        </div>
+        <div class="carusel-element" index="2">
+            You can add or create students to youre courses. After the student has been created, he will receive an email with login and password. If student is already avealabel you can add him by email, be careful you can add only student type user.
+        </div>
+        <div class="carusel-element" index="3">
         </div>
     </div>
     <div class="parent-block">
@@ -104,20 +126,19 @@
         </div>
 
         <div class="info-buttons">
-            <div class="info-block">
+            <div class="info-block" onclick="setCarusel(1)">
                 <div class="info-text">
                     What does it mean "Create and Control Your own courses"?
                 </div>
             </div>
-            <div class="info-block">
+            <div class="info-block" onclick="setCarusel(2)">
                 <div class="info-text">
                     Ok , I created one or more courses , but what I do with it?
                 </div>
             </div>
-            <div class="info-block">
+            <div class="info-block" onclick="setCarusel(3)">
                 <div class="info-text">
                     OK! , I created one or more courses AND add send orders to students , but what NOW?
-                    
                 </div>
             </div>
         </div>

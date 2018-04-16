@@ -4,7 +4,7 @@
     background-image: url(/Content/themes/base/images/base-bg.jpg);
     background-position: bottom left;
     background-size: 40%;
-
+    min-width:1200px
 }
 /*#body-bg{
     position:fixed;
@@ -244,7 +244,9 @@ max-height:100px;
 }
 
 #ordered-students , #active-students{
-    position:relative;
+text-align:left;
+overflow-y:auto;
+position:relative;
 height:450px;
 transition:0.3s;
 vertical-align:top;

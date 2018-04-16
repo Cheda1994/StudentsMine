@@ -37,7 +37,7 @@ input[type=text], input[type=password] {
     background-color: #f44336;
 }
 
-.container-login {
+.container-login, .container-register {
     text-align: center;
 }
 /* Center the image and position the close button */
@@ -214,6 +214,40 @@ cursor: pointer;
         })
     }
 
+    function signUp() {
+        if (permisions()) {
+        $(".container-login")[0].style.display = "none";
+        $(".container-holder")[0].style.display = "block";
+        data = {};
+        result = {};
+        data['UserName'] = $("input[name='register.UserName']")[0].value;
+        data['Password'] = $("input[name='register.Password']")[0].value;
+        data['ConfirmPassword'] = $("input[name='register.ConfirmPassword']")[0].value;
+        data['Email'] = $("input[name='register.Email']")[0].value;
+        result.model = data;
+        data['__RequestVerificationToken'] = $('input[name=__RequestVerificationToken]').val();
+        $.ajax({
+            url: "/Account/Register",
+            type: "POST",
+            data: data,
+            success: function () {
+                window.open("/Cource", "_self")
+            }
+        })
+        } 
+    }
+
+    function permisions() {
+        if ($("input[name='register.Password']")[0].value.length < 7) {
+            toastr.warning("The password must be longer");
+            return false;
+        } else if ($("input[name='register.Password']")[0].value != $("input[name='register.ConfirmPassword']")[0].value) {
+            toastr.warning("The password confirm is incorrect");
+            return false;
+        }
+        return true;
+    }
+
     function showLogin() {
         $(".container-options")[0].style.display = "none";
         $(".container-login")[0].style.display = "block";
@@ -259,30 +293,40 @@ cursor: pointer;
                 <div class="container-login">
                     <p>
                         <label for="uname"><b>Username</b></label>
+                        <br />
                         <input type="text" placeholder="Enter Username" class="login" name="model.UserName" required>
                     </p>
                     <p>
                         <label for="psw"><b>Password</b></label>
+                        <br />
                         <input type="password" placeholder="Enter Password" class="login" name="model.Password" required>
                     </p>
                     <div style="position:relative;" class="logInButton" onclick="logIn();" type="submit">Login</div>
-                    <label>
-                        <input type="checkbox" checked="checked" name="RememberMe"> Remember me
-                    </label>
+
                 </div>
                 <div class="container-register">
                     <p>
                         <label for="uname"><b>Username</b></label>
-                        <input type="text" placeholder="Enter Username" class="register" name="model.UserName" required>
+                        <br />
+                        <input type="text" placeholder="Enter Username" class="login" name="register.UserName" required>
+                    </p>
+                    <p>
+                        <label for="uname"><b>Email</b></label>
+                        <br />
+                        <input type="text" placeholder="Enter Username" class="login" name="register.Email" required>
                     </p>
                     <p>
                         <label for="psw"><b>Password</b></label>
-                        <input type="password" placeholder="Enter Password" class="register" name="model.Password" required>
+                        <br />
+                        <input type="password" placeholder="Enter Password" class="login" name="register.Password" required>
                     </p>
-                    <button style="position:relative;" class="registerButton" type="submit">Login</button>
-                    <label>
-                        <input type="checkbox" checked="checked" name="RememberMe"> Remember me
-                    </label>
+                    <p>
+                        <label for="psw"><b>Confirm password</b></label>
+                        <br />
+                        <input type="password" placeholder="Enter Password" class="login" name="register.ConfirmPassword" required>
+                    </p>
+                    <div style="position:relative;" class="logInButton" onclick="signUp();" type="submit">Login</div>
+
                 </div>
             </div>
 

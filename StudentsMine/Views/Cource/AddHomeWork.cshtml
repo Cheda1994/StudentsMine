@@ -110,11 +110,18 @@
         </div>
 
         <div class="form-group">
-            <h4>HasCondition</h4>
+            <div class="col-md-10">
+                <label class="label--checkbox">
+                    <input type="checkbox" onchange="conditionStatusChange(this)" class="checkbox data" name="HasCondition">
+                    HasCondition
+                </label>
+                @*<input type="checkbox" class="data" name="Condition%HasRequiredFormat" disabled />*@
+            </div>
+            @*<h4>HasCondition</h4>
             <br />
             <div class="col-md-10 btn btn-secondary active">
                 <input type="checkbox" onchange="conditionStatusChange(this)" class="data" name="HasCondition" />
-            </div>
+            </div>*@
         </div>
 
         <div id="condition">
@@ -131,10 +138,13 @@
 </div>
 
             <div class="form-group">
-                <h4>HasRequiredFormat</h4>
                 <br />
                 <div class="col-md-10">
-                    <input type="checkbox" class="data" name="Condition%HasRequiredFormat" disabled />
+                    <label class="label-checkbox">
+                        <input type="checkbox" class="checkbox data" name="Condition%HasRequiredFormat">
+                        HasRequiredFormat
+                    </label>
+                    @*<input type="checkbox" class="data" name="Condition%HasRequiredFormat" disabled />*@
                 </div>
             </div>
 

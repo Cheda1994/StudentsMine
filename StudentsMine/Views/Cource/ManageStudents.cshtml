@@ -3,8 +3,15 @@
     ViewBag.Title = "ManageStudents";
 }
 
-<h2>ManageStudents</h2>
 <div ng-controller="studentsCtrl" id="student-page">
+    <div style="text-align:left;">
+        <a href="/Student/CreateStudent/@ViewBag.CourseId" class="btn btn-primary">
+            Create new students
+        </a>
+        <a href="/Student/AddStudentToCourse/@ViewBag.CourseId" class="btn btn-primary">
+            Add students by email
+        </a>
+</div>
     <div id="active-students">
         <div ng-mouseleave="hideInfoButton(this)" ng-mouseover="showInfoButton(this)" class="transformable" ng-repeat="student in Students" ng-class="!isOpen ? 'student-presentation':'student-presentation-open'">
             <div>
@@ -25,7 +32,7 @@
                 <div>Name: {{ student.Name }}</div>
                 <div>Email: {{ student.Email }}</div>
             </div>
-            <div class="btn btn-success" >ASDASDAS</div>
+            <div class="btn btn-success" >Remember</div>
         </div>
     </div>
 </div>
@@ -65,7 +72,8 @@
         $http({
             method: "GET",
             url: "/Cource/GetAllOrders?courseId=" + @ViewBag.CourseId
-        }).then(function (result) {
+            }).then(function (result) {
+                console.log(result);
             $scope.orderedStudents = result.data
         })
         $scope.showInfoButton = function (repeateElement) {

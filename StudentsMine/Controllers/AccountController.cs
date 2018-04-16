@@ -120,6 +120,7 @@ namespace StudentsMine.Controllers
                     var user = new ApplicationUser() { UserName = model.UserName };
                     user.Student = new Student(model);
                     user.Role = "Student";
+                    Guid passowrd = Guid.NewGuid(); // will be password
                     var result = await UserManager.CreateAsync(user, "111111");
                     status = new SudentRegistrationStatus(model, result.Succeeded, StudentRegResults.OK , result.Errors);
                     if (result.Succeeded)
