@@ -86,11 +86,11 @@
 <script>
     function setCarusel(index) {
         var old = $(".info-description .active");
-        old.fadeOut(300);
-        old.removeClass("active");
+        old.fadeOut(300, function () {         old.removeClass("active");
         var newEl = $(".carusel-element[index=" + index + "]");
         newEl.addClass("active");
         newEl.fadeIn(300);
+        });
     }
 </script>
 @Html.Partial("_PartSignIn")
@@ -111,7 +111,7 @@
             On the main page you can create your course with name,description and template permision. Every course has home work repository(library), hub with students projects , chanel for online lessons(beta) and course chat(beta).
         </div>
         <div class="carusel-element" index="2">
-            You can add or create students to youre courses. After the student has been created, he will receive an email with login and password. If student is already avealabel you can add him by email, be careful you can add only student type user.
+            You can add or create students to your courses. After the student has been created, he will receive an email with login and password. If student is already avealabel you can add him by email, be careful you can add only student type user.
         </div>
         <div class="carusel-element" index="3">
         </div>

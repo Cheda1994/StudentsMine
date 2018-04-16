@@ -58,9 +58,12 @@
         transition: 1s;
         background-color: #cb3d2866;
     }
-
+    .live-lesson-block {
+        cursor:not-allowed;
+        background-color: #fb2d4766;
+    } 
     .log-out-block:hover {
-        transition:1s;
+        transition: 1s;
         background-color: #9ace5b;
     }
     .messages-block:hover {
@@ -176,13 +179,31 @@
     </div>
     @if (ViewBag.CourseId != null)
     {
-    <div class="sb-block allcourses-block" onclick="sideBarButton('/Cource')">
+        <hr />
+    <div class="sb-block home-work-block" onclick="sideBarButton('/Cource')">
         <div class="sb-name-block user-name-block">
-            All Courses
+            Home work
         </div>
         <div style="float: right; width: 75px; height: 75px;">
-            <img class="side-image" src="/Content/themes/base/images/AllCourses.png" />
+            <img class="side-image" src="/Content/themes/base/images/homeWorkSideIcon.png" />
         </div>
     </div>
+            <div class="sb-block projects-hub-block" onclick="sideBarButton('/Cource')">
+        <div class="sb-name-block user-name-block">
+            Projects hub
+        </div>
+        <div style="float: right; width: 75px; height: 75px;">
+            <img class="side-image" src="/Content/themes/base/images/hubIconColor.png" />
+        </div>
+    </div>
+                    <div class="sb-block live-lesson-block" onclick="sideBarButton('/Cource')">
+        <div class="sb-name-block user-name-block">
+            Projects hub
+        </div>
+        <div style="float: right; width: 75px; height: 75px;">
+            <img class="side-image" src="/Content/themes/base/images/liveIcon.png" />
+        </div>
+    </div>
+        <hr />
     }
 </div>
