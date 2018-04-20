@@ -37,7 +37,7 @@ namespace StudentsMine.Controllers
         [Authorize(Roles = "Teacher")]
         public async Task<ActionResult> CreateStudent(List<CreateStudentView> model , int courseId)
         {
-            List<SudentRegistrationStatus> results = new List<SudentRegistrationStatus>();
+            List<RegistrationStatus> results = new List<RegistrationStatus>();
             AccountController account = new AccountController();
             try
             {
@@ -56,16 +56,16 @@ namespace StudentsMine.Controllers
                     {
                         if (AlreadyHasOrder(courseId , item.Email))
                         {
-                            results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.AlreadyOrdered, new List<string>() { "This email " + item.Email + " is already orderd." }));
+                            results.Add(new RegistrationStatus(item, false, StudentRegResults.AlreadyOrdered, new List<string>() { "This email " + item.Email + " is already orderd." }));
                         }
                         else
                         {
-                            results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.EmailExists, new List<string>() { "This email "+ item.Email +" is already exists" }));
+                            results.Add(new RegistrationStatus(item, false, StudentRegResults.EmailExists, new List<string>() { "This email "+ item.Email +" is already exists" }));
                         }
                     }
                     else
                     {
-                        results.Add(new SudentRegistrationStatus(item, false, StudentRegResults.Exception, new List<string>() { "This email " + item.Email + " is already exists and cannot be added to youre course." }));
+                        results.Add(new RegistrationStatus(item, false, StudentRegResults.Exception, new List<string>() { "This email " + item.Email + " is already exists and cannot be added to youre course." }));
                     }
                 }
                 var json = new JavaScriptSerializer().Serialize(results);

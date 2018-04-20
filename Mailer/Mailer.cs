@@ -26,6 +26,18 @@ namespace Mailer
             
         }
 
+        public static bool VerifyEmail(string email)
+        {
+            try { 
+            var mailAddres = new MailAddress(email);
+            return true;
+                }
+            catch
+            {
+                return false;
+            }
+        
+        }
         public void SetGeter(string email)
         {
             getter = new MailAddress(email);

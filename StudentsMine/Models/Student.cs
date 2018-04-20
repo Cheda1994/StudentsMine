@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace StudentsMine.Models
@@ -33,6 +34,17 @@ namespace StudentsMine.Models
     {
         public int UIId { get; set; }
         public string Name { get; set; }
+
+        public override RegistrationStatus Verify()
+        {
+            var status = base.Verify();
+            if (this.Name.Length < 8 || this.Name.Length > 20)
+            {
+                status.Result = false;
+                status.ErrorMessage += "The Name size is incorrect.";
+            }
+            return status;
+        }
     }
 
     public class OrderStudentToCourceView
@@ -40,20 +52,14 @@ namespace StudentsMine.Models
         public int UIId { get; set; }
         public string Email {get;set;}
     }
-    public class SudentRegistrationStatus
+    public class RegistrationStatus
     {
-        public SudentRegistrationStatus(CreateStudentView Student, bool Result, StudentRegResults status,  IEnumerable<string> ErrorMessage)
+        public RegistrationStatus(RegisterViewModel model, bool Result, StudentRegResults status,  IEnumerable<string> ErrorMessage)
         {
-            this.UIId = Student.UIId;
             this.Status = status;
-            this.Email = Student.Email;
-            this.Name = Student.Name;
+            this.Email = model.Email;
             this.Result = Result;
-            if (Result)
-            {
-                this.ErrorMessage = "No errors";
-            }
-            else
+            if (!Result)
             {
                 foreach (var message in ErrorMessage)
                 {
@@ -67,7 +73,7 @@ namespace StudentsMine.Models
         public bool Result { get; set; }
         public StudentRegResults Status { get; set; }
         public string ErrorMessage { get; set; }
-        public List<OrderToCourse> OrdersToCourse { get; set; }
+
     }
 
     public class SudentAddToCourseStatus {

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace StudentsMine.Models
 {
@@ -62,5 +64,28 @@ namespace StudentsMine.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        public virtual RegistrationStatus Verify()
+        {
+            RegistrationStatus status = new RegistrationStatus(this, true, StudentRegResults.OK, new List<string>());
+            status.Result = true;
+            var regexFormat = new Regex("^[a-zA-Z0-9 ]*$");
+            if (!Mailer.Mailer.VerifyEmail(this.Email))
+            {
+                status.Result = false;
+                status.ErrorMessage += "The email format is inncorrect.";
+            };
+            if (this.UserName.Length < 8 || this.UserName.Length > 20)
+            {
+                status.Result = false;
+                status.ErrorMessage += "The Name field length is inncorrect(from 8 and until 20 symbols).";
+            }
+            else if (!regexFormat.IsMatch(this.UserName))
+            {
+                status.Result = false;
+                status.ErrorMessage += "The UserName can hold only Latinica symbols and numbers(A-Z,a-z,0-9).";
+            }
+            return status;
+        }
     }
 }

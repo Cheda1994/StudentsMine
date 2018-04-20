@@ -4,9 +4,11 @@
 <style>
     body{
     font-family: cursive;
+    min-height:650px;
+    min-width:1120px;
     }
 
-    button {
+    .modalSign {
         background-color: #4CAF50;
         color: white;
         padding: 14px 20px;
@@ -14,14 +16,14 @@
         border: none;
         cursor: pointer;
         width: 100%;
-        position:absolute;
-        right:20px;
+        position: fixed;
+        right: 20px;
     }
 
 
 
     .parent-block {
-        position: absolute;
+        position: fixed;
         left: 0;
         bottom: 5%;
         right: 0;
@@ -63,6 +65,7 @@
 
     .info-description {
         height: 40%;
+        min-height:190px;
         background-color: #f1f0f0;
         margin-top: 5%;
         border-radius: 10px;
@@ -95,7 +98,7 @@
 </script>
 @Html.Partial("_PartSignIn")
 @if (!Request.IsAuthenticated) { 
-<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign In/Sign Up</button>
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="modalSign">Sign In/Sign Up</button>
 }
 <div style="text-align:center;">
     <h1 style="margin-bottom:0px;">Students mine</h1>

@@ -42,7 +42,7 @@ namespace StudentsMine.Controllers
         [StudentAccess("CanDownloadFiles")]
         public ContentResult ProjectsHubFiles(int courseId)
         {
-            List<AttachmentView> files = context.Database.SqlQuery<AttachmentView>("SELECT * FRoM HUB_PROJECTS WHERE Course_Id = " + courseId).ToList();
+            List<AttachmentView> files = context.Database.SqlQuery<AttachmentView>("SELECT * FROM PROJECT_HUB_VIEW WHERE Course_Id = " + courseId).ToList();
             var json = new JavaScriptSerializer().Serialize(files);
             return new ContentResult()
             {

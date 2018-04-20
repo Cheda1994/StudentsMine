@@ -208,15 +208,27 @@ cursor: pointer;
             url: "/Account/Login",
             type: "POST",
             data: data,
-            success: function () {
-                window.open("/Cource" , "_self")
+            success: function (data) {
+                console.log(data)
+                if (!data.Result) {
+                    toastr.warning(data.ErrorMessage)
+                    $(".container-login")[0].style.display = "block";
+                    $(".container-holder")[0].style.display = "none";
+                } else {
+                    window.open("/Cource" , "_self")
+                }
+              
+            },
+            error: function (resp) {
+                console.log(resp);
+
             }
         })
     }
 
     function signUp() {
         if (permisions()) {
-        $(".container-login")[0].style.display = "none";
+        $(".container-register")[0].style.display = "none";
         $(".container-holder")[0].style.display = "block";
         data = {};
         result = {};
@@ -230,11 +242,25 @@ cursor: pointer;
             url: "/Account/Register",
             type: "POST",
             data: data,
-            success: function () {
-                window.open("/Cource", "_self")
+            success: function (data) {
+                console.log(data);
+                if (data.Result) {
+                    window.open("/Cource", "_self")
+                } else {
+                    $(".container-register")[0].style.display = "block";
+                    $(".container-holder")[0].style.display = "none";
+                    toastr.warning(data.ErrorMessage)
+                }
             }
         })
         } 
+    }
+
+    function cancel() {
+        $(".container-options")[0].style.display = "block";
+        $(".container-register")[0].style.display = "none";
+        $(".container-login")[0].style.display = "none";
+        document.getElementById('id01').style.display = 'none'
     }
 
     function permisions() {
@@ -254,15 +280,8 @@ cursor: pointer;
     }
 
     function showRegister() {
-        $(".container-options").animate({
-            opacity: "0"
-        }, 1000, function () {
-            $(".container-options")[0].style.display = "none";
-            $(".container-register")[0].style.display = "block";
-            $(".container-register").animate({ opacity: "1" })
-
-
-        })
+        $(".container-options")[0].style.display = "none";
+        $(".container-register")[0].style.display = "block";
     }
 </script>
     <div id="id01" class="modal">
@@ -274,7 +293,7 @@ cursor: pointer;
             </div>
             @Html.AntiForgeryToken()
             <div class="container">
-                <div class="container-holder">
+                <div class="container-holder" style="text-align:center;">
                     <div class="loader"></div>
                 </div>
                 <div class="container-options">
@@ -331,7 +350,7 @@ cursor: pointer;
             </div>
 
             <div class="container" style="background-color:#f1f1f1">
-                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+                <button type="button" onclick="cancel()" class="cancelbtn">Cancel</button>
                 <span class="psw">Forgot <a href="#">password?</a></span>
             </div>
         </form>

@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using StudentsMine.Models;
 using System.Diagnostics;
+using System.Web.Script.Serialization;
+using System.Net.Mail;
 
 namespace StudentsMine.Controllers
 {
@@ -48,17 +50,32 @@ namespace StudentsMine.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            RequestStatus status = new RequestStatus();
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindAsync(model.UserName, model.Password);
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
+                    status.Result = true;
+                    status.ErrorMessage = "No errors";
+                    var json = new JavaScriptSerializer().Serialize(status);
+                    return new ContentResult()
+                    {
+                        Content = json,
+                        ContentType = "application/json"
+                    };
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
+                    status.Result = false;
+                    status.ErrorMessage = "Invalid username or password.";
+                    var json = new JavaScriptSerializer().Serialize(status);
+                    return new ContentResult()
+                    {
+                        Content = json,
+                        ContentType = "application/json"
+                    };
                 }
             }
 
@@ -81,7 +98,8 @@ namespace StudentsMine.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            RegistrationStatus status = model.Verify();
+            if (status.Result)
             {
                 var user = new ApplicationUser() { UserName = model.UserName };
                 user.Teacher = new Teacher();
@@ -93,36 +111,43 @@ namespace StudentsMine.Controllers
                 {
                     var currentUser = UserManager.FindByName(user.UserName);
                     UserManager.AddToRole(currentUser.Id, "Teacher");
-
                     await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    AddErrors(result);
+                    //AddErrors(result);
+                    status.Result = false;
+                    foreach (var error in result.Errors)
+                    {
+                        status.ErrorMessage += error;
+                    }
                 }
             }
+            var json = new JavaScriptSerializer().Serialize(status);
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = "application/json"
+            };
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<SudentRegistrationStatus> RegisterStudent(CreateStudentView model)
+        public async Task<RegistrationStatus> RegisterStudent(CreateStudentView model)
         {
-            SudentRegistrationStatus status = null;
-
+            RegistrationStatus status = model.Verify();
             try
             {
-                if (ModelState.IsValid)
+                if (status.Result)
                 {
                     var user = new ApplicationUser() { UserName = model.UserName };
                     user.Student = new Student(model);
                     user.Role = "Student";
                     Guid passowrd = Guid.NewGuid(); // will be password
                     var result = await UserManager.CreateAsync(user, "111111");
-                    status = new SudentRegistrationStatus(model, result.Succeeded, StudentRegResults.OK , result.Errors);
+                    status = new RegistrationStatus(model, result.Succeeded, StudentRegResults.OK , result.Errors);
                     if (result.Succeeded)
                     {
                         var student = UserManager.FindByName(user.UserName);
@@ -136,17 +161,12 @@ namespace StudentsMine.Controllers
                         mail.Send();
                     }
                 }
-                else
-                {
-                    status = new SudentRegistrationStatus(model, ModelState.IsValid, StudentRegResults.NoValideModel, new List<string>() { "The model state is not valide" });
-                }
             }
             catch (Exception ex)
             {
-                status = new SudentRegistrationStatus(model, false, StudentRegResults.Exception, new List<string>() { ex.Message });
+                status = new RegistrationStatus(model, false, StudentRegResults.Exception, new List<string>() { ex.Message });
             }
 
-            // If we got this var, something failed, redisplay form
             return status;
         }
 
