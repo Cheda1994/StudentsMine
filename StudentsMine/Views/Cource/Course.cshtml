@@ -29,7 +29,7 @@
             <img src="/Content/themes/base/images/hubIcon.png" style="width:30%" />
         </div>
         </div>
-        @if (User.IsInRole("Teacher"))
+        @if (User.IsInRole(StudentsMine.App_Start.ApplicationConstants.TEACHER))
 {
     <div class="course-obtions-buttons short" onclick="linkEvent('managestudents' , 'Cource')">
         <div class="button-content">

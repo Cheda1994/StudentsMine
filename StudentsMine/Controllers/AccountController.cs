@@ -12,6 +12,8 @@ using StudentsMine.Models;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
 using System.Net.Mail;
+using StudentsMine.App_Start;
+using System.Web.Security;
 
 namespace StudentsMine.Controllers
 {
@@ -63,7 +65,7 @@ namespace StudentsMine.Controllers
                     return new ContentResult()
                     {
                         Content = json,
-                        ContentType = "application/json"
+                        ContentType = ApplicationConstants.JSON_TYPE
                     };
                 }
                 else
@@ -74,7 +76,7 @@ namespace StudentsMine.Controllers
                     return new ContentResult()
                     {
                         Content = json,
-                        ContentType = "application/json"
+                        ContentType = ApplicationConstants.JSON_TYPE
                     };
                 }
             }
@@ -103,14 +105,14 @@ namespace StudentsMine.Controllers
             {
                 var user = new ApplicationUser() { UserName = model.UserName };
                 user.Teacher = new Teacher();
-                user.Role = "Teacher";
+                user.Role = ApplicationConstants.TEACHER;
                 user.Teacher.Name = model.UserName;
                 user.Teacher.Email = model.Email;
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     var currentUser = UserManager.FindByName(user.UserName);
-                    UserManager.AddToRole(currentUser.Id, "Teacher");
+                    UserManager.AddToRole(currentUser.Id, ApplicationConstants.TEACHER);
                     await SignInAsync(user, isPersistent: false);
                 }
                 else
@@ -129,7 +131,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
@@ -144,19 +146,19 @@ namespace StudentsMine.Controllers
                 {
                     var user = new ApplicationUser() { UserName = model.UserName };
                     user.Student = new Student(model);
-                    user.Role = "Student";
-                    Guid passowrd = Guid.NewGuid(); // will be password
-                    var result = await UserManager.CreateAsync(user, "111111");
+                    user.Role = ApplicationConstants.STUDENT;
+                    string passowrd = Membership.GeneratePassword(10 , 0); // will be password
+                    var result = await UserManager.CreateAsync(user, passowrd);
                     status = new RegistrationStatus(model, result.Succeeded, StudentRegResults.OK , result.Errors);
                     if (result.Succeeded)
                     {
                         var student = UserManager.FindByName(user.UserName);
-                        UserManager.AddToRole(student.Id, "Student");
+                        UserManager.AddToRole(student.Id, ApplicationConstants.STUDENT);
                         Mailer.Mailer mail = new Mailer.Mailer();
                         mail.SetGeter(user.Student.Email);
                         string emailText = "You was ordet to the course ****** , by *******. <br /> ";
                         emailText += "User name: "+user.UserName+" <br /> ";
-                        emailText += "Password: 111111";
+                        emailText += "Password: " + passowrd;
                         mail.SetTitleAndBody("Order to Course", emailText);
                         mail.Send();
                     }

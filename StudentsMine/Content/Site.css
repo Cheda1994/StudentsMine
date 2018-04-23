@@ -172,6 +172,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 .download-link{
+    box-shadow:0 0.1rem 0.2rem rgba(0,0,0,0.12), 0 0 0.1rem rgba(0,0,0,0.12);
     display:inline-block;
     transition:0.3s;
     border-radius:10px;
@@ -195,7 +196,7 @@ input[type="checkbox"].input-validation-error {
 .download-link:hover{
     transition:0.3s;
     cursor:pointer;
-    background-color:#808080bd;
+    background-color:#ffffffbd;
 }
 
 .student-presentation {

@@ -39,7 +39,7 @@ namespace StudentsMine.Controllers
         }
         //
         // GET: /Cource/
-        [StudentAccess("CanDownloadFiles")]
+        [StudentAccess(ApplicationConstants.CAN_DOWNLOAD_FILES)]
         public ContentResult ProjectsHubFiles(int courseId)
         {
             List<AttachmentView> files = context.Database.SqlQuery<AttachmentView>("SELECT * FROM PROJECT_HUB_VIEW WHERE Course_Id = " + courseId).ToList();
@@ -47,7 +47,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
@@ -63,10 +63,10 @@ namespace StudentsMine.Controllers
             ICollection<Course> courses = null;
             switch (currentUser.Role)
             {
-                case "Teacher":
+                case ApplicationConstants.TEACHER:
                     courses = currentUser.Teacher.Courses;
                     break;
-                case "Student":
+                case ApplicationConstants.STUDENT:
                     courses = currentUser.Student.Courses;
                     break;
                 default:
@@ -81,13 +81,13 @@ namespace StudentsMine.Controllers
             return View(course);
         }
 
-        [Authorize(Roles="Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ActionResult AddCource() {
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ActionResult AddCource(Course course)
         {
             Teacher user = context.Teachers.SingleOrDefault(x => x.ApplicationUser.Id == currentUserId);
@@ -112,8 +112,8 @@ namespace StudentsMine.Controllers
             return View(homeWork);
         }
 
-        
-        [Authorize(Roles = "Teacher")]
+
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         [HttpPost]
         public ContentResult AddHomeWork(HomeWork homeWork, int courseId)
         {
@@ -143,7 +143,7 @@ namespace StudentsMine.Controllers
             var json = new JavaScriptSerializer().Serialize(result);
             return new ContentResult() { 
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
@@ -151,9 +151,9 @@ namespace StudentsMine.Controllers
             ViewBag.CourseId = courseId;
             switch (currentUserRole)
             {
-                case "Teacher":
+                case ApplicationConstants.TEACHER:
                     return TeacherHomeWorkIndex(courseId);
-                case "Student":
+                case ApplicationConstants.STUDENT:
                     return StudentHomeWorkIndex(courseId);
                 default:
                     return View();
@@ -223,8 +223,8 @@ namespace StudentsMine.Controllers
 
 
 
-        [Authorize(Roles = "Student")]
-        [StudentAccess("AccessToHomeWork")]
+        [Authorize(Roles = ApplicationConstants.STUDENT)]
+        [StudentAccess(ApplicationConstants.ACCESS_TO_HOMEWORK)]
         private ActionResult StudentHomeWorkIndex(int courseId)
         {
             List<Project> projects = context.Projects.Where(p => p.IsHomeWork == true && p.HomeWork.Course.Id == courseId && p.Author.ApplicationUser.Id == currentUserId).ToList();
@@ -237,7 +237,7 @@ namespace StudentsMine.Controllers
             return View("~/Views/Cource/HomeWork/Index.cshtml", hwList);
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         private ActionResult TeacherHomeWorkIndex(int courseId)
         {
             context.Configuration.LazyLoadingEnabled = false;
@@ -247,7 +247,7 @@ namespace StudentsMine.Controllers
         #endregion
 
         #region Home Work options
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public async Task<ContentResult> BlockHomeWork(int homeworkId)
         {
             RequestStatus status = new RequestStatus();
@@ -286,12 +286,12 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json",
+                ContentType = ApplicationConstants.JSON_TYPE,
                 ContentEncoding = Encoding.UTF8
             };
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public async Task<ActionResult> GetHWProjectsList(int homeworkId)
         {
             HomeWorkProjectsList projects = new HomeWorkProjectsList();
@@ -325,7 +325,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json",
+                ContentType = ApplicationConstants.JSON_TYPE,
                 ContentEncoding = Encoding.UTF8
             };
         }
@@ -358,12 +358,12 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json",
+                ContentType = ApplicationConstants.JSON_TYPE,
                 ContentEncoding = Encoding.UTF8
             };
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public async Task<ContentResult> EditHW(Condition condition, int homeworkId)
         {
             return new ContentResult();
@@ -371,7 +371,7 @@ namespace StudentsMine.Controllers
         #endregion
 
         #region Projects options
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ContentResult GetFile(int projectId)
         {
             var project = context.Projects.Include("File").Where(x => x.Id == projectId).SingleOrDefault();
@@ -416,7 +416,7 @@ namespace StudentsMine.Controllers
             }
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public async Task<ActionResult> ChangeMark(int projectId, int mark)
         {
             RequestStatus result;
@@ -458,13 +458,13 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
         [HttpGet]
-        [Authorize(Roles = "Student")]
-        [StudentAccess("AccessToHomeWork")]
+        [Authorize(Roles = ApplicationConstants.STUDENT)]
+        [StudentAccess(ApplicationConstants.ACCESS_TO_HOMEWORK)]
         public async Task<ContentResult> GetHWProject(int projectId)
         {
             Project project = context.Projects.Include(p => p.HomeWork.Attachments).Where(p => p.Id == projectId).SingleOrDefault();
@@ -475,7 +475,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = jsonResult,
-                    ContentType = "application/json",
+                    ContentType = ApplicationConstants.JSON_TYPE,
                     ContentEncoding = Encoding.UTF8
                 };
             }
@@ -484,15 +484,15 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = "You have no access to this file",
-                    ContentType = "application/json",
+                    ContentType = ApplicationConstants.JSON_TYPE,
                     ContentEncoding = Encoding.UTF8
                 };
             }
         }
 
         [HttpPost]
-        [Authorize(Roles = "Student")]
-        [StudentAccess("AccessToHomeWork")]
+        [Authorize(Roles = ApplicationConstants.STUDENT)]
+        [StudentAccess(ApplicationConstants.ACCESS_TO_HOMEWORK)]
         public async Task<ActionResult> UploadHomeWork(UploadHomeWork model)
         {
             Project project = await context.Projects.FindAsync(model.ProjectId);
@@ -522,13 +522,13 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json",
+                ContentType = ApplicationConstants.JSON_TYPE,
                 ContentEncoding = Encoding.UTF8
             };
         }
 
 
-        [StudentAccess("AccessToHomeWork")]
+        [StudentAccess(ApplicationConstants.ACCESS_TO_HOMEWORK)]
         public ContentResult GetHWAttachment(string fileId) {
             FileData file = context.Files.Where(f => f.Guid.ToString() == fileId).SingleOrDefault();
             string json;
@@ -546,7 +546,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json",
+                ContentType = ApplicationConstants.JSON_TYPE,
                 ContentEncoding = Encoding.UTF8
             };
         } 
@@ -564,7 +564,7 @@ namespace StudentsMine.Controllers
             return PartialView("~/Views/Cource/HomeWork/_EditHomeWork.cshtml");
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         [HttpGet]
         public ContentResult GetAllStudents(int courseId) {
             List<Student> students = context.Courses.Find(courseId).Students.ToList();
@@ -579,7 +579,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = ApplicationConstants.JSON_TYPE
                 };
             }
             else
@@ -593,13 +593,13 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = ApplicationConstants.JSON_TYPE
                 };
             }
             
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         [HttpGet]
         public ContentResult GetAllOrders(int courseId) {
             IQueryable<OrderToCourse> orders = context.OrdersToCourse.Where(x => x.Course.Id == courseId & x.Status == false);
@@ -614,7 +614,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = ApplicationConstants.JSON_TYPE
                 };
             }
             return null;
@@ -635,7 +635,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = ApplicationConstants.JSON_TYPE
                 };
             }
             return null;
@@ -668,7 +668,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content=json,
-                ContentType="application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
@@ -691,23 +691,23 @@ namespace StudentsMine.Controllers
             return new ContentResult() 
             {
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
-        [Authorize(Roles="Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ContentResult GetAccessToCourse(int courseId , int studentId)
         {
             StudentAccessProp sap = context.StudentAccessProps.Where(x => courseId == x.Course.Id && studentId == x.Student.Id).SingleOrDefault();
             Dictionary<string, bool> result = new Dictionary<string, bool>();
-            result.Add("AccessToCourse", sap.AccessToCourse);
-            result.Add("CanUploadFiles", sap.CanUploadFiles);
-            result.Add("CanDownloadFiles", sap.CanDownloadFiles);
-            result.Add("AccessToHomeWork", sap.AccessToHomeWork);
+            result.Add(ApplicationConstants.ACCESS_TO_COURSE, sap.AccessToCourse);
+            result.Add(ApplicationConstants.CAN_UPLOAD_FILES, sap.CanUploadFiles);
+            result.Add(ApplicationConstants.CAN_DOWNLOAD_FILES, sap.CanDownloadFiles);
+            result.Add(ApplicationConstants.ACCESS_TO_HOMEWORK, sap.AccessToHomeWork);
             var json = new JavaScriptSerializer().Serialize(result);
             return new ContentResult(){
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 
@@ -726,7 +726,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult() 
                 { 
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = ApplicationConstants.JSON_TYPE
                 };
             }
             catch (Exception ex)
@@ -738,12 +738,12 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json"
+                    ContentType = ApplicationConstants.JSON_TYPE
                 };
             }
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ContentResult RememberAboutHW(int homeWorkId) {
             RequestStatus status = new RequestStatus();
             try
@@ -763,7 +763,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json"
+                ContentType = ApplicationConstants.JSON_TYPE
             };
         }
 

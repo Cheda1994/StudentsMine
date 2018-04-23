@@ -28,27 +28,33 @@ namespace StudentsMine.App_Start
             var userName = System.Security.Claims.ClaimsPrincipal.Current.Identity.Name;
             int courseId = int.Parse(filterContext.HttpContext.Request.QueryString["courseId"]);
             var studentAccess = context.StudentAccessProps.Where(x => x.Course.Id == courseId & x.Student.ApplicationUser.UserName == userName).SingleOrDefault();
-            if (!System.Security.Claims.ClaimsPrincipal.Current.IsInRole("Teacher"))
+            if (!System.Security.Claims.ClaimsPrincipal.Current.IsInRole(ApplicationConstants.TEACHER))
             {
 
             if (studentAccess.AccessToCourse & accessType != null)
             {
                 switch (accessType)
                 {
-                    case "CanUploadFiles":
+                    case ApplicationConstants.CAN_UPLOAD_FILES:
                         if (!studentAccess.CanUploadFiles)
                         {
                             request.Result = false;
                         }
                         break;
-                    case "CanDownloadFiles":
+                    case ApplicationConstants.CAN_DOWNLOAD_FILES:
                         if (!studentAccess.CanDownloadFiles)
                         {
                             request.Result = false;
                         }
                         break;
-                    case "AccessToHomeWork":
+                    case ApplicationConstants.ACCESS_TO_HOMEWORK:
                         if (!studentAccess.AccessToHomeWork)
+                        {
+                            request.Result = false;
+                        }
+                        break;
+                    case ApplicationConstants.ACCESS_TO_COURSE:
+                        if (!studentAccess.AccessToCourse)
                         {
                             request.Result = false;
                         }
@@ -69,7 +75,7 @@ namespace StudentsMine.App_Start
                             var json = new JavaScriptSerializer().Serialize(request);
                             filterContext.Result = new ContentResult() {
                                 Content = json,
-                                ContentType = "application/json" 
+                                ContentType = ApplicationConstants.JSON_TYPE 
                             };
                         }
         }

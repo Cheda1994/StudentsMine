@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using StudentsMine.App_Start;
 using StudentsMine.Models;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace StudentsMine.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ActionResult CreateStudent(int id) {
             ViewData["courseId"] = id;
             List<CreateStudentView> students = new List<CreateStudentView>(){
@@ -34,7 +35,7 @@ namespace StudentsMine.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public async Task<ActionResult> CreateStudent(List<CreateStudentView> model , int courseId)
         {
             List<RegistrationStatus> results = new List<RegistrationStatus>();
@@ -72,7 +73,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = json,
-                    ContentType = "application/json",
+                    ContentType = ApplicationConstants.JSON_TYPE,
                     ContentEncoding = Encoding.UTF8
                 };
             }
@@ -82,7 +83,7 @@ namespace StudentsMine.Controllers
                 return new ContentResult()
                 {
                     Content = ex.Message,
-                    ContentType = "application/json",
+                    ContentType = ApplicationConstants.JSON_TYPE,
                     ContentEncoding = Encoding.UTF8
                 };
             }
@@ -97,7 +98,7 @@ namespace StudentsMine.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = ApplicationConstants.TEACHER)]
         public async Task<ActionResult> AddStudentToCourse(List<OrderStudentToCourceView> email , int courseId) {
             List<SudentAddToCourseStatus> results = new List<SudentAddToCourseStatus>();
             foreach (var item in email)
@@ -117,7 +118,7 @@ namespace StudentsMine.Controllers
             return new ContentResult()
             {
                 Content = json,
-                ContentType = "application/json",
+                ContentType = ApplicationConstants.JSON_TYPE,
                 ContentEncoding = Encoding.UTF8
             };
         }
