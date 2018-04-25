@@ -1,19 +1,25 @@
-﻿<div>
-    Access to course
+﻿<hr />
+<div style="padding:10px;">
+    <div>
+
+    </div>
+    <div>
+        <input name="BaseAccessProps%AccessToCourse" class="data hidden-xs-up" id="cbx3" type="checkbox" ng-model="access.AccessToCourse" />
+        <label class="cbx" for="cbx3"></label><label class="lbl" for="cbx3">Access to course</label>
+    </div>
+    <div>
+        <input name="BaseAccessProps%CanUploadFiles" class="data hidden-xs-up" id="cbx2" type="checkbox" ng-model="access.CanUploadFiles" />
+        <label class="cbx" for="cbx2"></label><label class="lbl" for="cbx2">Can upload files</label>
+    </div>
+    <div>
+        <input name="BaseAccessProps%CanDownloadFiles" class="data hidden-xs-up" id="cbx1" type="checkbox" ng-model="access.CanDownloadFiles" />
+        <label class="cbx" for="cbx1"></label><label class="lbl" for="cbx1">Can download files</label>
+    </div>
+    <div>
+        <input name="BaseAccessProps%AccessToHomeWork" class="data hidden-xs-up" id="cbx0" type="checkbox" ng-model="access.AccessToHomeWork" />
+        <label class="cbx" for="cbx0"></label><label class="lbl" for="cbx0">Access to Homework</label>
+    </div>
     <br />
-    <input type="checkbox" ng-model="access.AccessToCourse"  />
-    <br />
-    Can Upload Files
-    <br />
-    <input type="checkbox" ng-model="access.CanUploadFiles"  />
-    <br />
-    Can Download Files
-    <br />
-    <input type="checkbox" ng-model="access.CanDownloadFiles"  />
-    <br />
-    Access To Home Work
-    <br />
-    <input type="checkbox" ng-model="access.AccessToHomeWork"  />
-    <br />
-    <div ng-click="updateStudentAccess(student.Id , this)">Update</div>
+    <div class="btn btn-info" ng-click="updateStudentAccess(student.Id , this)">Update</div>
 </div>
+

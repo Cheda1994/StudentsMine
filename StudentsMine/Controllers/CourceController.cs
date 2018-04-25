@@ -90,13 +90,28 @@ namespace StudentsMine.Controllers
         [Authorize(Roles = ApplicationConstants.TEACHER)]
         public ActionResult AddCource(Course course)
         {
-            Teacher user = context.Teachers.SingleOrDefault(x => x.ApplicationUser.Id == currentUserId);
-            course.Teacher = user;
-            //StudentAccessProp accessProp = new StudentAccessProp();
-            //course.BaseAccessProps = accessProp;
-            context.Courses.Add(course);
-            context.SaveChanges();
-            return View();
+            var result = new RequestStatus();
+            try
+            {
+                Teacher user = context.Teachers.SingleOrDefault(x => x.ApplicationUser.Id == currentUserId);
+                course.Teacher = user;
+                //StudentAccessProp accessProp = new StudentAccessProp();
+                //course.BaseAccessProps = accessProp;
+                context.Courses.Add(course);
+                context.SaveChanges();
+                result.Result = true;
+            }
+            catch (Exception ex)
+            {
+                result.Result = false;
+                result.ErrorMessage += ex.Message; 
+            }
+            var json = new JavaScriptSerializer().Serialize(result);
+            return new ContentResult()
+            {
+                Content = json,
+                ContentType = ApplicationConstants.JSON_TYPE
+            };
         }
 
         public ActionResult AddStudentsToCource()

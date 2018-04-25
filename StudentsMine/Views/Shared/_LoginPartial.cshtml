@@ -180,7 +180,7 @@
     @if (ViewBag.CourseId != null)
     {
         <hr />
-    <div class="sb-block home-work-block" onclick="sideBarButton('/Cource')">
+    <div class="sb-block home-work-block" onclick="sideBarButton('/Cource/HomeWorkIndex?courseId=@ViewBag.CourseId')">
         <div class="sb-name-block user-name-block">
             Home work
         </div>
@@ -188,7 +188,7 @@
             <img class="side-image" src="/Content/themes/base/images/homeWorkSideIcon.png" />
         </div>
     </div>
-            <div class="sb-block projects-hub-block" onclick="sideBarButton('/Cource')">
+    <div class="sb-block projects-hub-block" onclick="sideBarButton('/Cource/ProjectsHub?courseId=@ViewBag.CourseId')">
         <div class="sb-name-block user-name-block">
             Projects hub
         </div>
@@ -198,7 +198,7 @@
     </div>
                     <div class="sb-block live-lesson-block" onclick="sideBarButton('/Cource')">
         <div class="sb-name-block user-name-block">
-            Projects hub
+            Live
         </div>
         <div style="float: right; width: 75px; height: 75px;">
             <img class="side-image" src="/Content/themes/base/images/liveIcon.png" />

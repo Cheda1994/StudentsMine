@@ -9,7 +9,14 @@
         url: "/Cource/AddCource",
         type: "POST",
         contentType: 'application/json',
-        data: JSON.stringify({'course' : json})
+        data: JSON.stringify({ 'course': json }),
+        success: function (data) {
+            if (data.Result) {
+                window.open('/Cource' , '_self')
+            } else {
+                toastr.warning(data.ErrorMessage)
+            }
+        }
     })
     }
 </script>
@@ -21,18 +28,19 @@
             @Html.ValidationSummary()
 
             <label>Name</label>
-            <br />
-            <div class="col-md-10">
-                <input style="width: 300px" type="text" class="data" name="Name" />
-            </div>
+            <p>
+                <div class="col-md-10">
+                    <input style="width: 300px" type="text" class="data" name="Name" />
+                </div>
+            </p>
 
-
-            <label>Description</label>
-            <br />
-            <div class="col-md-10">
-                <textarea style="resize:none;width:300px;height:100px;" class="data" name="Description"></textarea>
-            </div>
-
+            <p>
+                <label>Description</label>
+                <br />
+                <div class="col-md-10">
+                    <textarea style="resize:none;width:300px;height:100px;" class="data" name="Description"></textarea>
+                </div>
+            </p>
         </div>
         <div style="display: inline-block; text-align: left;">
             <h3>Base access tamplate</h3>

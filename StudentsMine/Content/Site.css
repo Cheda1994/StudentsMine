@@ -98,6 +98,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 .home-work {
+    background-color:white;
     heigth:45%;
     min-height:400px;
     max-height:500px;
@@ -161,11 +162,6 @@ input[type="checkbox"].input-validation-error {
     border-radius: 2px;
 }
 
-/*.project-row:hover {
-    cursor:pointer;
-    transition: 0.3s;
-    background-color:#80808052;
-}*/
 
 .project-info {
     display:none;
